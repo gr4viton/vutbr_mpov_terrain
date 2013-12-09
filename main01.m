@@ -37,24 +37,33 @@ global FI;
 FI = 0;
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % load images
-i = 1;
-ob1 = imread(strcat('pic\map',num2str(i),'.png')); i=i+1;
-ob2 = imread(strcat('pic\map',num2str(i),'.png')); i=i+1;
-ob3 = imread(strcat('pic\map',num2str(i),'.png')); i=i+1;
-ob4 = imread(strcat('pic\map',num2str(i),'.png')); i=i+1;
-ob5 = imread(strcat('pic\map',num2str(i),'.png')); i=i+1;
-ob6 = imread(strcat('pic\map',num2str(i),'.png')); i=i+1;
-% for i=1:6
-%     ob(:,:,i) = imread(strcat('pic\map',num2str(i),'.png'));
-% end
+% i = 1;
+% ob{i} = imread(strcat('pic\map',num2str(i),'.png'));fn{i}=strcat('pic\map',num2str(i),'.png'); i=i+1;
+% ob{i} = imread(strcat('pic\map',num2str(i),'.png'));fn{i}=strcat('pic\map',num2str(i),'.png'); i=i+1;
+% ob{i} = imread(strcat('pic\map',num2str(i),'.png'));fn{i}=strcat('pic\map',num2str(i),'.png'); i=i+1;
+% ob{i} = imread(strcat('pic\map',num2str(i),'.png'));fn{i}=strcat('pic\map',num2str(i),'.png'); i=i+1;
+% ob{i} = imread(strcat('pic\map',num2str(i),'.png'));fn{i}=strcat('pic\map',num2str(i),'.png'); i=i+1;
+% ob{i} = imread(strcat('pic\map',num2str(i),'.png'));fn{i}=strcat('pic\map',num2str(i),'.png'); i=i+1;
+for i=1:6
+    ob{i} = imread(strcat('pic\map',num2str(i),'.png'));fn{i}=strcat('pic\map',num2str(i),'.png');
+end
+i=7;
+ob{i} = imread(strcat('pic\small.png'));fn{i}=strcat('pic\small.png');
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % method1 - otsu segmentation - not good
 
-% im = ob1;
+%%method3 - mean shift segmentation
+% for i=1:7
+%     im = fn{i};
 % marg = max(size(im)) * 0.01;
-% a = method1(im,marg);
+% a = method3(im,marg,1);
+% end
 % na = method1(255-im,marg);
+i=1;
+im = fn{i};
+marg = max(size(im)) * 0.01;
+a = method3(im,marg,1);
 
 % FI=FI+1; figure(FI);  x = 2; y = 2; SI = 0;
 % 
@@ -80,7 +89,7 @@ ob6 = imread(strcat('pic\map',num2str(i),'.png')); i=i+1;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % method 2 - LAB color and Kmeans
-cutout(ob1,[30 30],20,20)
+% cutout(ob1,[30 30],20,20)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % napady 
 %% louka a les - stejna strukutra ale ruzna barva - potom co rozsegmetuju na 
