@@ -35,8 +35,8 @@ subplot2 = @(m,n,p) subtightplot (m, n, p, [0.05 0.01], [0.05 0.01], [0.01 0.01]
 % set figure index
 global FI;
 FI = 0;
-
-%% load images
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% load images
 i = 1;
 ob1 = imread(strcat('pic\map',num2str(i),'.png')); i=i+1;
 ob2 = imread(strcat('pic\map',num2str(i),'.png')); i=i+1;
@@ -48,14 +48,43 @@ ob6 = imread(strcat('pic\map',num2str(i),'.png')); i=i+1;
 %     ob(:,:,i) = imread(strcat('pic\map',num2str(i),'.png'));
 % end
 
-%% method1 - otsu
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% method1 - otsu segmentation - not good
 
+% im = ob1;
+% marg = max(size(im)) * 0.01;
+% a = method1(im,marg);
+% na = method1(255-im,marg);
+
+% FI=FI+1; figure(FI);  x = 2; y = 2; SI = 0;
+% 
+% 
+% SI=SI+1; subplot2(y,x,SI);
+% imshow(a,[]); ylabel(strcat('a = method1(im)')); axis tight
+% 
+% SI=SI+1; subplot2(y,x,SI);
+% imshow(na,[]); ylabel(strcat('na = method1(!im)')); axis tight
+% 
+% ana = a-na;
+% SI=SI+1; subplot2(y,x,SI);
+% imshow(ana,[]); ylabel(strcat('a - na')); axis tight
+% 
+% % im = im(marg:end-marg, marg:end-marg,:);
+% % imm = im.*ana;
+% % imm = im.*cat(3,ana,ana,ana);
+% SI=SI+1; subplot2(y,x,SI);
+% imshow(imm,[]); ylabel(strcat('original')); axis tight
+% % SI=SI+1; subplot2(y,x,SI);
+% % imshow(im,[]); ylabel(strcat('original')); axis tight
+% 
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% method 2 - LAB color and Kmeans
 im = ob1;
-marg = max(size(im)) * 0.01;
-a = method2(im,marg);
-na = method2(255-im,marg);
+method2(im);
 
-
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% napady 
 %% louka a les - stejna strukutra ale ruzna barva - potom co rozsegmetuju na 
 
 %% matematická morfologie - hit & miss
@@ -73,28 +102,6 @@ na = method2(255-im,marg);
 % image processing analysis and machine vision
 % somka
 % 17ta kapitola
-
-
-FI=FI+1; figure(FI);  x = 2; y = 2; SI = 0;
-
-
-SI=SI+1; subplot2(y,x,SI);
-imshow(a,[]); ylabel(strcat('a = method1(im)')); axis tight
-
-SI=SI+1; subplot2(y,x,SI);
-imshow(na,[]); ylabel(strcat('na = method1(!im)')); axis tight
-
-ana = a-na;
-SI=SI+1; subplot2(y,x,SI);
-imshow(ana,[]); ylabel(strcat('a - na')); axis tight
-
-% im = im(marg:end-marg, marg:end-marg,:);
-% imm = im.*ana;
-% imm = im.*cat(3,ana,ana,ana);
-SI=SI+1; subplot2(y,x,SI);
-imshow(imm,[]); ylabel(strcat('original')); axis tight
-% SI=SI+1; subplot2(y,x,SI);
-% imshow(im,[]); ylabel(strcat('original')); axis tight
 
 
 %% K-means

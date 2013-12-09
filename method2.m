@@ -1,93 +1,100 @@
-function [out] = method2(im, marg)
+% function [out] = method2(a_im)
+close all; clear; clc;
+% global FI;
+i = 1; 
+sob1 = imread(strcat('pic\smap',num2str(i),'.png')); i=i+1;
+% sob1 = imresize(sob1, 0.42);
+a_im = sob1;
 
 addpath(genpath('..\subtightplot'));
 subplot2 = @(m,n,p) subtightplot (m, n, p, [0.05 0.01], [0.05 0.01], [0.01 0.01]);
 
-%labspace
+%% printing
+global FI;
+
+%% original
+FI=FI+1; figure(FI);  x = 3; y = 3; SI = 0;
+
+im = a_im;
+    SI=SI+1; subplot2(y,x,SI);
+    imshow(im,[]); title(strcat('original')); axis tight
+
+%% labspace
 cform = makecform('srgb2lab');
-im1 = applycform(im,cform);
- 
-%classifie colors
-ab = double(im1(:,:,2:3));
+im1_lab = applycform(im,cform);
+im = im1_lab;
+    SI=SI+1; subplot2(y,x,SI);
+    imshow(im,[]); title(strcat('original')); axis tight
+
+%% classify colors
+ab = double(im1_lab(:,:,2:3));
 nrows = size(ab,1);
 ncols = size(ab,2);
 ab = reshape(ab,nrows*ncols,2);
 
-nColors = 3;
+nColors = 6;
+kmeans_repetitions = 4;
 % repeat the clustering 3 times to avoid local minima
-[cluster_idx cluster_center] = kmeans(ab,nColors,'distance','sqEuclidean', ...
-                                      'Replicates',3);
+[cluster_idx, cluster_center, sumd] = kmeans( ...
+    ab,nColors,'distance','sqEuclidean', ...
+    'replicates',kmeans_repetitions); %, ...
+%     'start', 'cluster');
 
-im2 = reshape(cluster_idx,nrows,ncols);
-% imshow(im3,[]), title('image labeled by cluster index');
+pixel_labels = reshape(cluster_idx,nrows,ncols);
 
-% im_bw6 = uint8(im_bw6.*255);
-% cc = uint8(cc.*255);
-out(:,:) = im1(:,:);
+%% colorize pixel labels
+cols = hot(nColors);
 
-%% printing
-global FI;
+colored_labels = cat(3, pixel_labels, pixel_labels, pixel_labels);
+im = uint8(colored_labels*255/nColors);
+    SI=SI+1; subplot2(y,x,SI);
+    imshow(im,[]); title(strcat('colored_labels')); axis tight
+    
+    
+%     collabs = repmat(colored_labels, 1, nColors);
+% cc(:,:,:,1:nColors) = colored_labels(:,:,:).*0;
 
-FI=FI+1; figure(FI);  x = 2; y = 3; SI = 0;
-% imshow(im,[]); title(strcat('original')); axis tight
+for i=1:nColors
+    b = (colored_labels==i);
+    for col=1:3
+        cc(:,:,col,i) = colored_labels(:,:,col).*b(:,:,col).*cols(i,col);
+    end
+   
+%     im = cc(:,:,:,i);
+%         SI=SI+1; subplot2(y,x,SI);
+%         imshow(im,[]); title(strcat('imaex')); axis tight 
+    
+%     a = colored_labels(colored_labels==i); % = cols(i);
+%     colored_labels = uint8(colored_labels);
+end
+colored_labels = uint8(sum(cc,4)/nColors*255);
 
-SI=SI+1; subplot2(y,x,SI);
-imshow(im,[]); title(strcat('original')); axis tight
+im = colored_labels;
+    SI=SI+1; subplot2(y,x,SI);
+    imshow(im,[]); title(strcat('colored labels')); axis tight; 
 
-im = im1;
-SI=SI+1; subplot2(y,x,SI);
-imshow(im1,[]); title(strcat('1')); axis tight
-
-im = im2;
-SI=SI+1; subplot2(y,x,SI);
-imshow(im2,[]); title(strcat('2')); axis tight
-
-im = im;
-SI=SI+1; subplot2(y,x,SI);
-imshow(im,[]); title(strcat('3')); axis tight
-
-im = im;
-SI=SI+1; subplot2(y,x,SI);
-imshow(im,[]); title(strcat('im_bw2')); axis tight
-
-im = im;
-SI=SI+1; subplot2(y,x,SI);
-imshow(im,[]); title(strcat('im_bw3')); axis tight
-
-im = im;
-SI=SI+1; subplot2(y,x,SI);
-imshow(im,[]); title(strcat('im_bw4')); axis tight
-
-im = im;
-SI=SI+1; subplot2(y,x,SI);
-imshow(im,[]); title(strcat('im_bw5')); axis tight
-
-im = im;
-SI=SI+1; subplot2(y,x,SI);
-imshow(im,[]); title(strcat('im_bw6')); axis tight
-
-
-% im = cc;
-% SI=SI+1; subplot2(y,x,SI);
-% imshow(im,[]); title(strcat('cc')); axis tight
-
-
-im = imrgb;
-SI=SI+1; subplot2(y,x,SI);
-imshow(im,[]); title(strcat('irgb')); axis tight
-
-% FI=FI+1; figure(FI);  x = 1; y = 2; SI = 0;
-% SI=SI+1; subplot2(y,x,SI);
-% pcolor(double(bg(1:8:end,1:8:end))),zlim([0 255]);
-% set(gca,'ydir','reverse');
+%     a = 0.9;
+for a= 0.1:0.2:0.9
+    colored_image = imlincomb(a, colored_labels, 1-a, uint8(a_im));
+    im = colored_image;
+        SI=SI+1; subplot2(y,x,SI);
+        imshow(im,[]); title(strcat('linear combination of original image [', ...
+            num2str(1-a),'] and colored labels [',num2str(a),']')); axis tight
+end
+    
+ %% segment images
+ 
+% segmented_images = cell(1,nColors);
+% rgb_label = repmat(pixel_labels,[1 1 3]);
 % 
-% SI=SI+1; subplot2(y,x,SI);
-% pcolor(double(bg2(1:8:end,1:8:end))),zlim([0 255]);
-% set(gca,'ydir','reverse');
+% for k = 1:nColors
+%     color = a_im;
+%     color(rgb_label ~= k) = 0;
+%     segmented_images{k} = color;
+% end
 
-
-
-
-
-% out = 1
-
+% for i=1:nColors
+%     im = segmented_images{i};
+%         SI=SI+1; subplot2(y,x,SI);
+%         imshow(im,[]); title(strcat('objects in cluster ',num2str(i))); axis tight
+% end
