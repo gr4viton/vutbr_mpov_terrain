@@ -1,0 +1,15 @@
+﻿Build started 1/26/2012 2:21:24 PM.
+     1>Project "C:\Users\sheikhh\Downloads\edison\project\EDISON.vcxproj" on node 2 (ClCompile target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Ic:/wx2/include /I../project /I../edge /I../segm /I../GUI /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D __WINDOWS__ /D __WXMSW__ /D DEBUG=1 /D __WXDEBUG__ /D __WIN95__ /D __WIN32__ /D WINVER=0x0400 /D STRICT /D _VC80_UPGRADE=0x0600 /Gm /EHsc /MT /GS /Gy- /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug\\" /Fd".\Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ..\edge\BgEdgeDetect.cpp
+         BgEdgeDetect.cpp
+     1>c:\users\sheikhh\downloads\edison\edge\bgedgedetect.cpp(388): error C2668: 'pow' : ambiguous call to overloaded function
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\math.h(583): could be 'long double pow(long double,int)'
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\math.h(535): or       'float pow(float,int)'
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\math.h(497): or       'double pow(double,int)'
+                 while trying to match the argument list '(int, int)'
+     1>Done Building Project "C:\Users\sheikhh\Downloads\edison\project\EDISON.vcxproj" (ClCompile target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.19
