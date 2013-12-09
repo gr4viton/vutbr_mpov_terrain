@@ -128,7 +128,8 @@ for nColors=nColors_space
     
 end % kmeans with different nColors
 
-MeanShiftCluster
+% MeanShiftCluster
+% change
 
 %% write normalized ERRORS
 % minERROR = min(ERROR);
