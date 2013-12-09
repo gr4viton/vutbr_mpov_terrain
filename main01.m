@@ -80,9 +80,7 @@ ob6 = imread(strcat('pic\map',num2str(i),'.png')); i=i+1;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % method 2 - LAB color and Kmeans
-im = ob1;
-method2(im);
-
+cutout(ob1,[30 30],20,20)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % napady 
 %% louka a les - stejna strukutra ale ruzna barva - potom co rozsegmetuju na 
