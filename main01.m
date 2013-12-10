@@ -37,19 +37,12 @@ global FI;
 FI = 0;
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % load images
-% i = 1;
-% ob{i} = imread(strcat('pic\map',num2str(i),'.png'));fn{i}=strcat('pic\map',num2str(i),'.png'); i=i+1;
-% ob{i} = imread(strcat('pic\map',num2str(i),'.png'));fn{i}=strcat('pic\map',num2str(i),'.png'); i=i+1;
-% ob{i} = imread(strcat('pic\map',num2str(i),'.png'));fn{i}=strcat('pic\map',num2str(i),'.png'); i=i+1;
-% ob{i} = imread(strcat('pic\map',num2str(i),'.png'));fn{i}=strcat('pic\map',num2str(i),'.png'); i=i+1;
-% ob{i} = imread(strcat('pic\map',num2str(i),'.png'));fn{i}=strcat('pic\map',num2str(i),'.png'); i=i+1;
-% ob{i} = imread(strcat('pic\map',num2str(i),'.png'));fn{i}=strcat('pic\map',num2str(i),'.png'); i=i+1;
 for i=1:6
     ob{i} = imread(strcat('pic\map',num2str(i),'.png'));fn{i}=strcat('pic\map',num2str(i),'.png');
 end
 i=7;
-ob{i} = imread(strcat('pic\small.png'));fn{i}=strcat('pic\small.png');
-
+ob{i} = imread(strcat('pic\small.png'));fn{i}=strcat('pic\small.png'); i=i+1;
+ob{i} = imread(strcat('pic\small_map.png'));fn{i}=strcat('pic\small_map.png');
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % method1 - otsu segmentation - not good
 
@@ -60,8 +53,9 @@ ob{i} = imread(strcat('pic\small.png'));fn{i}=strcat('pic\small.png');
 % a = method3(im,marg,1);
 % end
 % na = method1(255-im,marg);
-i=1;
-im = fn{i};
+
+i=8;
+im = fn{8};
 marg = max(size(im)) * 0.01;
 a = method3(im,marg,1);
 
