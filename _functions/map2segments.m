@@ -66,6 +66,7 @@ end
 %% mean shift
 disp('> Mean-shift computation');
 
+
 % resolution ~ execution time
 numCol = '';
 if size(im,3) > 1
