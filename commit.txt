@@ -1,0 +1,4 @@
+git add -u
+git commit -m "sadfasdf"
+git push
+(git pull)

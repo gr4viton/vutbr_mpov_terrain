@@ -1,0 +1,23 @@
+MPOV segmentation statiscics for file: small.png
+Segment 1:    20.19%
+Segment 2:    2.48%
+Segment 3:    5.05%
+Segment 4:    1.21%
+Segment 5:    0.09%
+Segment 6:    18.65%
+Segment 7:    36.40%
+Segment 8:    0.57%
+Segment 9:    0.30%
+Segment 10:    0.08%
+Segment 11:    0.31%
+Segment 12:    1.13%
+Segment 13:    0.86%
+Segment 14:    0.24%
+Segment 15:    3.50%
+Segment 16:    3.54%
+Segment 17:    0.30%
+Segment 18:    0.53%
+Segment 19:    1.78%
+Segment 20:    0.16%
+Segment 21:    2.24%
+Segment 22:    0.38%
