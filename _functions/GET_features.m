@@ -7,7 +7,7 @@ function [ ftrList ] = GET_features( segim, labels, modes, regsize, grad, conf )
 fi = @(y,x) labels(y,x)+1;
 fi_max = max(labels(:)) + 1;
 
-disp(['>>>>> Number of segments = ', num2str(fi_max+1)]);
+disp(['    - Number of segments = ', num2str(fi_max+1)]);
 
 % predefining the size of featureList
 ftrList(fi_max+1).areaSumAbs = 0;

@@ -8,7 +8,7 @@ if writeSegmentedPath~=0
 disp('> Write segmented images to disk');
 segmentPrefix = 'segm_';
     imwrite(segIm, [writeSegmentedPath, segmentPrefix, imFileName]);
-    disp(['>>> Segmented image written to "', ...
+    disp(['  * Segmented image written to "', ...
         writeSegmentedPath, segmentPrefix, imFileName, '"']);
 end
 
@@ -18,7 +18,7 @@ if writeIndexedPath~=0
 indxPrefix = 'indx_';
 indxIm = imadjust( indxIm, stretchlim(indxIm) );
     imwrite(indxIm, [writeIndexedPath, indxPrefix, imFileName]);
-    disp(['>>> Indexed image written to "', ...
+    disp(['  * Indexed image written to "', ...
         writeIndexedPath, indxPrefix, imFileName, '"']);
 end
 

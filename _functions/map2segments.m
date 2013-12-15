@@ -27,7 +27,7 @@
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %@function      map2segments
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-disp('> map2segments started <');
+disp('map2segments started');
 
 %% global plotting parameters
 global FI; global SX; global SY; global SI;
@@ -48,7 +48,7 @@ SI = 0;
 %% read image 
 [pathstr,name,ext] = fileparts(imPath);
 imFileName = [name,ext];
-disp( strcat('>>> Image-name "', ' ', name, ext, '", in "', pathstr,'"') );
+disp( strcat('  * Image-name "', ' ', name, ext, '", in "', pathstr,'"') );
 
 % imread
 im_orig = imread(imPath);
@@ -58,7 +58,7 @@ im = im_orig;
 if(doFigures == 1)
     FI=FI+1; figure(FI); SX = 3; SY = 1; SI = 0;
     % draw input image
-    disp('>>> Show input image');
+    disp('  * Show input image');
     DRAW_image(im, 'original');
 end
 
@@ -72,17 +72,17 @@ numCol = '';
 if size(im,3) > 1
     numCol = strcat(' × ', num2str(size(im,3)),' colors');
 end
-disp(strcat('>>> Resolution of image =',num2str(size(im,1)), ...
+disp(strcat('  * Resolution of image =',num2str(size(im,1)), ...
     '×',num2str(size(im,2)),'px', numCol));
 numPx = size(im,1)*size(im,2);
 
-disp(['>>> Number of pixels = ',num2str(numPx)]);
+disp(['  * Number of pixels = ',num2str(numPx)]);
 if numPx < 30000
-    disp('>>>>> This can take some time (~seconds)');
+    disp('>   - This can take some time (~seconds)');
 elseif numPx < 75000
-    disp('>>>>> This can take some time (~minutes)');
+    disp('>   - This can take some time (~minutes)');
 else
-    disp('>>>>> This can take some time (maybe hours)');
+    disp('>   - This can take some time (maybe hours)');
 end
 
 % get the segmented RGB image and other variables - calculate Mean Shift
@@ -91,7 +91,7 @@ end
 
 tic;
 % [segIm, labels, modes, regsize, grad, conf] = SPLIT_meanShift(im);
-    disp(['>>> Done in ',num2str(toc),'s']);
+    disp(['  * Done in ',num2str(toc),'s']);
 
 %% draw segmented & indexed image
 if max(max(labels)) > 255
@@ -102,17 +102,17 @@ end
 
 % plot them
 if(doFigures == 1)
-    disp('>>> Show Mean-shift segmented image');
+    disp('  * Show Mean-shift segmented image');
     DRAW_image(segIm, 'segmented image (meanshift)');
-    disp('>>> Show Mean-shift indexed image');
+    disp('  * Show Mean-shift indexed image');
     DRAW_image(indxIm, 'indexed image of segments');
 end
    
 %% calculate feature lists for individual segments
 disp('> Statistics');
-    disp('>>> Calculating feature list for individual segments');
+    disp('  * Calculating feature list for individual segments');
     stats = GET_features(segIm, labels, modes, regsize, grad, conf);
-    disp('>>> Done');
+    disp('  * Done');
 
 %% shrink feature-close segments togeather
 disp('> Shrink feature-close segments togeather');
@@ -124,7 +124,7 @@ WRITE_images(segIm, indxIm, writeSegmentedPath, writeIndexedPath, imFileName);
 %% write statistical data to file - if specified
 WRITE_statistics(stats, imFileName, writeStatsPath);
 
-disp('> End of map2segments <');
+disp('map2segments - ended');
 
 % end
 
