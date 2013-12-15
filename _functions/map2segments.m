@@ -34,7 +34,7 @@ global FI; global SX; global SY; global SI;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % debug
- imPath='..\pic\smaller.png'
+ imPath='..\pic\smaller.png';
  writeSegmentedPath='..\out\'; 
  writeIndexedPath='..\out\'; 
  writeStatsPath='..\out\'; 
@@ -88,8 +88,10 @@ end
 % get the segmented RGB image and other variables - calculate Mean Shift
 % >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>!!!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 % >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>!!!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+tic;
 % [segIm, labels, modes, regsize, grad, conf] = SPLIT_meanShift(im);
-    disp('>>> Done');
+    disp(['>>> Done in ',num2str(toc),'s']);
 
 %% draw segmented & indexed image
 if max(max(labels)) > 255
