@@ -116,7 +116,7 @@ disp('> Shrink feature-close segments togeather');
 SHRINK_segmentCount(stats);
 
 %% write segmented images - if specified
-WRITE_images(segIm, indxIm, writeSegmentedPath, writeIndexedPath);
+WRITE_images(segIm, indxIm, writeSegmentedPath, writeIndexedPath, imFileName);
     
 %% write statistical data to file - if specified
 WRITE_statistics(stats, imFileName, writeStatsPath);

@@ -1,4 +1,5 @@
-function [ ] = WRITE_images( segIm, indxIm, writeSegmentedPath, writeIndexedPath )
+function [ ] = WRITE_images( ...
+segIm, indxIm, writeSegmentedPath, writeIndexedPath, imFileName )
 %WRITE_IMAGES if paths are specified and not zero write segmented and indexed image
 %   ...
 
