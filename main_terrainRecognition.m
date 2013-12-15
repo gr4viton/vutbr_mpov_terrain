@@ -21,18 +21,15 @@
 %% Vypracování
 
 %% clean-up & dependencies
-close all; clear; clc;
-% addpath(genpath('D:\EDUC\m1\V_MPOV'));
-addpath(genpath('.\subtightplot'));
+close all; clc; clear; 
 addpath(genpath('.\_functions'));
 
 %% set figure index
 global FI; FI = 0;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% load images
-disp('Loading images');
-i = 1;
+disp('main_terrainRecognition started');
+%% segment individual maps
 % for i=1:6
 %     ob{i} = imread(strcat('pic\map',num2str(i),'.png'));
 %     fn{i} = strcat('pic\map',num2str(i),'.png');
@@ -40,11 +37,13 @@ i = 1;
 % i=7;
 % ob{i} = imread(strcat('pic\small.png')); fn{i}=strcat('pic\small.png'); i=i+1;
 % ob{i} = imread(strcat('pic\small_map.png')); fn{i}=strcat('pic\small_map.png');
-ob{i} = imread(strcat('pic\smaller.png')); fn{i}=strcat('pic\smaller.png');
-
-map2segments('pic\smaller.png',1,1,1,1);
+% ob{i} = imread(strcat('pic\smaller.png')); fn{i}=strcat('pic\smaller.png');
 
 
+map2segments('pic\smaller.png', 1, 1, 1, 1);
+
+
+disp('main_terrainRecognition ended');
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % napady 

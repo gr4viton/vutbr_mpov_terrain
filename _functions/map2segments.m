@@ -1,5 +1,5 @@
-function [ segIm, indxIm ] = ...
-map2segments( imPath, writeSegmented, writeIndexed, writeStats, doFigures )
+% function [ segIm, indxIm ] = ...
+% map2segments( imPath, writeSegmented, writeIndexed, writeStats, doFigures )
 %MAP2SEGMENTS segmentation of map-alike image based on mean-shift method
 % 
 % * The displayed time of mean-shift function execution are only
@@ -29,6 +29,12 @@ disp('> map2segments started <');
 %% global plotting parameters
 global FI; global SX; global SY; global SI;
 
+ imPath='..\pic\smaller.png'
+ writeSegmented=1; writeIndexed=1; writeStats=1; doFigures=1;
+%  close all;
+FI = 0;
+SI = 0;
+
 %% read image 
 [pathstr,name,ext] = fileparts(imPath);
 imFileName = [name,ext];
@@ -41,7 +47,7 @@ im = im_orig;
 %% plot image
 if(doFigures == 1)
     FI=FI+1; figure(FI); SX = 3; SY = 1; SI = 0;
-% draw input image
+    % draw input image
     disp('>>> Show input image');
     DRAW_image(im, 'original');
 end
@@ -69,7 +75,9 @@ else
 end
 
 % get the segmented RGB image and other variables - calculate Mean Shift
-[segIm, labels, modes, regsize, grad, conf] = SPLIT_meanShift(im);
+% >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>!!!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+% >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>!!!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+% [segIm, labels, modes, regsize, grad, conf] = SPLIT_meanShift(im);
     disp('>>> Done');
 
 %% draw segmented & indexed image
@@ -78,22 +86,20 @@ if max(max(labels)) > 255
 else
     indxIm = uint8(labels);
 end
-% draw segmented & indexed image
+
+% plot them
 if(doFigures == 1)
     disp('>>> Show Mean-shift segmented image');
     DRAW_image(segIm, 'segmented image (meanshift)');
     disp('>>> Show Mean-shift indexed image');
     DRAW_image(indxIm, 'indexed image of segments');
 end
-
    
 %% calculate feature lists for individual segments
 disp('> Statistics');
     disp('>>> Calculating feature list for individual segments');
     stats = GET_features(segIm, labels, modes, regsize, grad, conf);
     disp('>>> Done');
-
-
 
 %% shrink feature-close segments togeather
 disp('> Shrink feature-close segments togeather');
@@ -125,5 +131,6 @@ end
 
 
 disp('> End of map2segments <');
-end
+
+% end
 
