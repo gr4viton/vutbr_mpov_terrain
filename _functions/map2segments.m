@@ -34,7 +34,7 @@ global FI; global SX; global SY; global SI;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % debug
- imPath='..\pic\smaller.png';
+ imPath='..\pic\smaller5.png';
  writeSegmentedPath='..\out\'; 
  writeIndexedPath='..\out\'; 
  writeStatsPath='..\out\'; 
@@ -66,30 +66,9 @@ end
 %% mean shift
 disp('> Mean-shift computation');
 
-
-% resolution ~ execution time
-numCol = '';
-if size(im,3) > 1
-    numCol = strcat(' × ', num2str(size(im,3)),' colors');
-end
-disp(strcat('  * Resolution of image =',num2str(size(im,1)), ...
-    '×',num2str(size(im,2)),'px', numCol));
-numPx = size(im,1)*size(im,2);
-
-disp(['  * Number of pixels = ',num2str(numPx)]);
-if numPx < 30000
-    disp('>   - This can take some time (~seconds)');
-elseif numPx < 75000
-    disp('>   - This can take some time (~minutes)');
-else
-    disp('>   - This can take some time (maybe hours)');
-end
-
-% get the segmented RGB image and other variables - calculate Mean Shift
-% >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>!!!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-% >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>!!!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
+% measure the time of execution for meanShift
 tic;
+% get the segmented RGB image and other variables - calculate Mean Shift
 % [segIm, labels, modes, regsize, grad, conf] = SPLIT_meanShift(im);
     disp(['  * Done in ',num2str(toc),'s']);
 

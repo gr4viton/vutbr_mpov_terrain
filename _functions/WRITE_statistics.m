@@ -24,7 +24,7 @@ fprintf(fid, str);
 fclose(fid);
 
 disp(strcat('  * Statistics of segmented image "',imFileName, '"', ...
-    ' > has been written to file: "',statsFileName, '"'));
+    ' > have been written to file: "',statsFileName, '"'));
 
 end % writeStatsPath~=0
 
