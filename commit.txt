@@ -1,4 +1,58 @@
-git add -u
-git commit -m "sadfasdf"
-git push
-(git pull)
+##################################################
+If you want to update the server with your changes
+1) add newly created files
+$ git add <filename>
+
+1) add files which has been already added before 
+-> to say that you want to update their changes
+$ git add -u
+
+2) create local commit with an intelligent message
+$ git commit -m "sadfasdf"
+
+3) push updates to the server
+$ git push
+$ ..: login
+$ ..: pswrd
+
+4) if the CLI says something like the server is ahead of you
+-> that means one of your project pals pushed their changes first
+-> you must pull the changes to you -> merge them (automaticly)
+and try to push them again (as you can merge only localy, not on server)
+
+##################################################
+If you want to update and merge your work with the repository
+1) pull datas from it - (automatic merging is set on default)
+$ git pull
+
+2) if the CLI says something like you must commit your changes first
+-> than you must commit your changes first ! 
+-> as thay would vanish in the merging process if you would not !
+
+2) if the CLI says something like the auto-merging failed on some files
+-> you must manually correct them one by one -> it's simple
+
+##################################################
+Manual correction of auto-merge failed files
+
+1) the guts of the not-auto-merged file is "doubled" on parts where it differs
+-> i.e. it can look like this 
+{
+...
+
+#include "main.h"
+<<<<< HEAD
+#include "string.h"
+=====
+#include <string>
+using namespace std;
+>>>>> asd89sdf09898dsa7gdafhgadf89adfh6
+
+...
+}
+
+2) The lines between "<<<<HEAD" & "=====" are those which are on your local file3) The lines between "=====" & ">>>>> ..checksum" are the one from server
+4) Stare patiently at those lines & preserve the ones which are more beautifull
+
+
+
