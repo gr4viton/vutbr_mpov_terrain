@@ -7,12 +7,15 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %@param[in]
 % [imPath] - a path to the segmented to-be image file 
-% [writeSegmented] - whether to write RGB segmented image to file
-%           if writeSegmented == 1 - write
-% [writeIndexed] - whether to write indexed segmented image to file
-%           if writeIndexed == 1 - write
-% [writeStats] - whether to write feature-list into stats text file
-%           if writeStats == 1 - write
+% [writeSegmentedPath] - whether to write RGB segmented image to file & where
+%           if writeSegmentedPath == 0 - do not write
+%           else write to path specified
+% [writeIndexedPath] - whether to write indexed segmented image to file & where
+%           if writeIndexedPath == 0 - do not write
+%           else write to path specified
+% [writeStatsPath] - whether to write feature-list into stats text file & where
+%           if writeStatsPath == 0 - do not write
+%           else write to path specified
 % [doFigures] - whether to imshow images through the process
 %           if doFigures == 1 - show
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -29,11 +32,18 @@ disp('> map2segments started <');
 %% global plotting parameters
 global FI; global SX; global SY; global SI;
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% debug
  imPath='..\pic\smaller.png'
- writeSegmented=1; writeIndexed=1; writeStats=1; doFigures=1;
+ writeSegmentedPath='..\out\'; 
+ writeIndexedPath='..\out\'; 
+ writeStatsPath='..\out\'; 
+ doFigures=1;
 %  close all;
 FI = 0;
 SI = 0;
+% debug - end
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% read image 
 [pathstr,name,ext] = fileparts(imPath);
@@ -105,30 +115,11 @@ disp('> Statistics');
 disp('> Shrink feature-close segments togeather');
 SHRINK_segmentCount(stats);
 
-if writeSegmented==1
-%% write segmented image
-disp('> Write segmented images to disk');
-segmentPrefix = 'segm_';
-    imwrite(segIm, [segmentPrefix, imFileName]);
-    disp(['>>> Segmented image written to ', segmentPrefix, imFileName]);
-end
-
-if writeIndexed==1
-%% write indexed image
-% adjust indexes into full gray-scale 
-indxPrefix = 'indx_';
-indxIm = imadjust( indxIm, stretchlim(indxIm) );
-    imwrite(indxIm, [indxPrefix, imFileName]);
-    disp(['>>> Segmented image written to ', segmentPrefix, imFileName]);
-end
+%% write segmented images - if specified
+WRITE_images(segIm, indxIm, writeSegmentedPath, writeIndexedPath);
     
-if writeStats==1
-%% write statistical data to file
-disp('> Writing feature lists data to statistics file');
-    WRITE_statistics(stats, imFileName);
-    disp('>>> Done');
-end
-
+%% write statistical data to file - if specified
+WRITE_statistics(stats, imFileName, writeStatsPath);
 
 disp('> End of map2segments <');
 

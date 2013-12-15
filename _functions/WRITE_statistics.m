@@ -1,9 +1,12 @@
-function [] = WRITE_statistics( stats, imFileName )
+function [] = WRITE_statistics( stats, imFileName, writeStatsPath )
 %WRITE_STATISTICS writes segments feature-lists into stats-file
 %   ...
 
+if writeStatsPath~=0
+disp('> Writing feature lists data to statistics file');
+
 statsPrefix = 'stats_';
-statsFileName = strcat(statsPrefix,imFileName,'.txt');
+statsFileName = strcat(writeStatsPath,statsPrefix,imFileName,'.txt');
 
 % open file
 fid = fopen(statsFileName,'w');
@@ -22,6 +25,8 @@ fclose(fid);
 
 disp(strcat('>>> Statistics of segmented image "',imFileName, '"', ...
     ' > has been written to file: "',statsFileName, '"'));
-    
+
+end % writeStatsPath~=0
+
 end
 
