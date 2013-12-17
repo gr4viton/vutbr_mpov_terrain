@@ -90,18 +90,18 @@ end
 %% calculate feature lists for individual segments
 disp('> Statistics');
     disp('  * Calculating feature list for individual segments');
-    stats = GET_features(segIm, labels, modes, regsize, grad, conf);
+    ftrList = GET_features(segIm, labels, modes, regsize, grad, conf);
     disp('  * Done');
 
 %% shrink feature-close segments togeather
 disp('> Shrink feature-close segments togeather');
-SHRINK_segmentCount(stats);
+SHRINK_segmentCount(ftrList);
 
 %% write segmented images - if specified
 WRITE_images(segIm, indxIm, writeSegmentedPath, writeIndexedPath, imFileName);
     
 %% write statistical data to file - if specified
-WRITE_statistics(stats, imFileName, writeStatsPath);
+WRITE_statistics(ftrList, imFileName, writeStatsPath);
 
 disp('map2segments - ended');
 

@@ -5,28 +5,49 @@ function [ ftrList ] = GET_features( segim, labels, modes, regsize, grad, conf )
 %% anonymous functions for index parameters
 % featureList([ index ]) - get index of segment from labels(y,x)
 fi = @(y,x) labels(y,x)+1;
-fi_max = max(labels(:)) + 1;
+iSegm_max = max(labels(:)) + 1;
 
-disp(['    - Number of segments = ', num2str(fi_max+1)]);
+disp(['    - Number of segments = ', num2str(iSegm_max+1)]);
 
 % predefining the size of featureList
-ftrList(fi_max+1).areaSumAbs = 0;
+ftrList(iSegm_max+1).areaSumAbs = 0;
 
 % [ featureList(index) ] - get featureList that corresponds to labels(y,x)
 % fL = @(y,x) featureList(fi(y,x));
 % fL = @(y,x) ftrList(uint16(labels(y,x)+1));
 % not functional [pointer to the array of struct] ?
 
-for i = 1:fi_max
-    % stats for segments as for a group of areas
-    ftrList(i).areaSumAbs = 0; % sum of all the pixels
-    ftrList(i).areaSumRelIm = 0; % area sum relatively to whole image
-    ftrList(i).areaSumRelIm = 0; % area sum relatively to the others - min area = 1
+%% nope
+% for i = 1:fi_max
+%     disp([ 'featureList(',num2str(i),')=',num2str( ftrList(i).areaSumAbs ) ])
+% end
+% percent of image
+        
+%% first loop through - for inicializing zero values and count the one-loop countable features
+for iSegm = 1:iSegm_max
+% stats for segments as for a group of areas
+    
+% ____________________________________________________
+% only inicialized
+    ftrList(iSegm).areaSumAbs2 = 0; % sum of all the pixels
+    ftrList(iSegm).areaSumRelIm = 0; % area sum relatively to whole image
+    
 %     ftrList(i).circumfrnc = 0; % sum of circumferences of individual areas of a segment
 
-% eulers number of a segment (genus)
-    ftrList(i).eulerNum = 0 ;
-    ftrList(i).eulerNum = bweuler( im2bw( uint16(labels(labels==i))) );
+% ____________________________________________________
+% counted here
+    
+    xlabels = labels; 
+    xlabels(xlabels~=iSegm) = 0; % get individual segment of index i - 
+    % on the pixels of segment in the picture is the index of segment
+    
+    % eulers number of a segment (genus) [8-neighbor]
+    ftrList(iSegm).eulerNum8 = bweuler( uint16(xlabels) ,8);
+    % sum of all the pixels
+    ftrList(iSegm).areaSumAbs = sum(xlabels(:)) ./ iSegm;
+
+% ____________________________________________________
+% others
 
 %     histogram
 % chist
@@ -44,25 +65,39 @@ for i = 1:fi_max
 % boxWidth
 % boxHeight
 end
-% 
-% A = ones(5,5);
-% % A([2,4],[2,4]) = 0;
-% % A(3,3) = 0;
-% A
-% bweuler( A )
-i = 1
-labels(labels~=i) = 0;
-im = im2bw( uint16(labels));
-% im = im2bw(labels);
-% im = uint16( reshape(, size(labels,2), size(labels,1)) );
-imshow( uint16(labels), []);
-bweuler (im,8)
-    
+
+
 for y = 1:size(labels,1)
     for x = 1:size(labels,2)
-        ftrList(fi(y,x)).areaSumAbs = ftrList(fi(y,x)).areaSumAbs + 1;
+        ftrList(fi(y,x)).areaSumAbs2 = ftrList(fi(y,x)).areaSumAbs2 + 1;
     end
 end
+
+
+%% second loop through
+[areaSumAbs_minVal, areaSumAbs_minIndex]  = min([ ftrList(iSegm).areaSumAbs ]);
+
+for iSegm = 1:iSegm_max
+    % area sum relatively to the others - min area = 1
+    ftrList(iSegm).areaSumRel = ftrList(iSegm).areaSumAbs / areaSumAbs_minVal; 
+end
+
+
+
+%% euler number testing
+% figure(51);
+% SI = 0;
+% SX=4;SY=3;
+% for i = 1:fi_max
+%     xlabels = labels;
+%     xlabels(xlabels~=i) = 0;
+%     eul1 = bweuler( uint16(xlabels) ,8);
+%     im = uint16(xlabels);
+%         SI=SI+1; subplot(SY,SX,SI);
+%         imshow(im,[]); 
+%         title(strcat('i[',num2str(i),'] eul = ',num2str(eul1),'')); axis tight
+% end
+
 
 % eulerNum - genus
 
@@ -72,19 +107,9 @@ end
 
 disp(ftrList);
 
-% for i = 1:fi_max
-%     disp([ 'featureList(',num2str(i),')=',num2str( featureList(i).areaSumAbs ) ])
-% end
-% percent of image
-        
-% stat_i.areaSumRel = 100*stats/ (size(segim,1) * size(segim,2));
 
 % elipsoidnost jednotlivých? -> natoèení a tak
 % 
-
-
-% mi je to jedno, øekni kdy a kde a já tam dojedu pokud nebudu zrovna na zkoušce ;)
-
 
 
 % stats.percentage
