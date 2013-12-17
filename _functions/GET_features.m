@@ -34,9 +34,12 @@ for iSegm = 1:iSegm_max
 % inicialization
     ftrList(iSegm).segmentIndex = iSegm; % segment index number
     ftrList(iSegm).areaSumAbs = 0; % sum of all the pixels
-    ftrList(iSegm).areaSumRel = 0; % area sum relatively to the others - max area = 100%
-    ftrList(iSegm).areaSumRelIm = 0; % area sum relatively to whole image = x%
-    ftrList(iSegm).eulerNum8 = 0; % eulers number of a segment (genus) [8-neighbor]
+    ftrList(iSegm).areaSumRel = 0.0; % area sum relatively to the others - max area = [100%]
+    ftrList(iSegm).areaSumRelIm = 0.0; % area sum relatively to whole image = [x%]
+    ftrList(iSegm).eulerNum8 = 0; % eulers number of a segment = genus (8-neighbor)
+    ftrList(iSegm).red = 0; % segment meanshift red color [0->1]
+    ftrList(iSegm).green = 0; % segment meanshift green color [0->1]
+    ftrList(iSegm).blue = 0; % segment meanshift blue color [0->1]
     
 %     ftrList(i).circumfrnc = 0; % sum of circumferences of individual areas of a segment
 
@@ -46,8 +49,14 @@ for iSegm = 1:iSegm_max
     xlabels(xlabels~=iSegm) = 0; % get individual segment of index i - 
     % on the pixels of segment in the picture is the index of segment
     
+    firstNonZeroIndex = find(xlabels, 1, 'first');
+    [y, x] = ind2sub(size(xlabels),firstNonZeroIndex)
+    ftrList(iSegm).red      = segIm( y, x, 1) ;
+    ftrList(iSegm).green    = segIm( y, x, 2) ;
+    ftrList(iSegm).blue     = segIm( y, x, 3) ;
+    
     ftrList(iSegm).areaSumAbs = sum(xlabels(:)) ./ iSegm;
-    ftrList(iSegm).areaSumRelIm =  ftrList(iSegm).areaSumAbs / imageArea * 100;
+    ftrList(iSegm).areaSumRelIm =  ftrList(iSegm).areaSumAbs * 100.0 / imageArea;
     ftrList(iSegm).eulerNum8 = bweuler( uint16(xlabels) ,8);
 
 % ____________________________________________________
@@ -78,7 +87,7 @@ areaSumAbs_maxVal  = max([ ftrList.areaSumAbs ]);
 
 for iSegm = 1:iSegm_max
     % area sum relatively to the others - min area = 1
-    ftrList(iSegm).areaSumRel = ftrList(iSegm).areaSumAbs / areaSumAbs_maxVal; 
+    ftrList(iSegm).areaSumRel = ftrList(iSegm).areaSumAbs * 100.0 / areaSumAbs_maxVal; 
 end
 
 %% euler number testing
