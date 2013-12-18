@@ -1,4 +1,4 @@
-function [ ftrList ] = GET_features( segIm, labels, modes, regsize, grad, conf )
+function [ ftrList ] = GET_features( imOrig, segIm, labels, modes, regsize, grad, conf )
 %GET_FEATURES gets feature-lists for individual segments
 %   ...
 
@@ -37,31 +37,86 @@ for iSegm = 1:iSegm_max
     ftrList(iSegm).areaSumRel = 0.0; % area sum relatively to the others - max area = [100%]
     ftrList(iSegm).areaSumRelIm = 0.0; % area sum relatively to whole image = [x%]
     ftrList(iSegm).eulerNum8 = 0; % eulers number of a segment = genus (8-neighbor)
-    ftrList(iSegm).red = 0; % segment meanshift red color [0->1]
-    ftrList(iSegm).green = 0; % segment meanshift green color [0->1]
-    ftrList(iSegm).blue = 0; % segment meanshift blue color [0->1]
+% meanshift-end RGB color [0->1]
+    ftrList(iSegm).endRed = 0;
+    ftrList(iSegm).endGreen = 0;
+    ftrList(iSegm).endBlue = 0;
+% median modus mean from original image segments RGB color
+    ftrList(iSegm).meanRed = 0;
+    ftrList(iSegm).meanGreen = 0;
+    ftrList(iSegm).meanBlue = 0;
+        ftrList(iSegm).modusRed = 0;
+        ftrList(iSegm).modusGreen = 0;
+        ftrList(iSegm).modusBlue = 0;
+    ftrList(iSegm).medianRed = 0;
+    ftrList(iSegm).medianGreen = 0;
+    ftrList(iSegm).medianBlue = 0;
+
     
 %     ftrList(i).circumfrnc = 0; % sum of circumferences of individual areas of a segment
 
 % ____________________________________________________
 % computation
     xlabels = labels; 
-    xlabels(xlabels~=iSegm) = 0; % get individual segment of index i - 
-    % on the pixels of segment in the picture is the index of segment
+    xlabels(xlabels~=iSegm) = 0; % get individual segment of index i 
+    xlabels = xlabels ./ iSegm; % [one] - segment | [zero] - not segment
     
-    firstNonZeroIndex = find(xlabels, 1, 'first');
-    [y, x] = ind2sub(size(xlabels),firstNonZeroIndex)
-    ftrList(iSegm).red      = segIm( y, x, 1) ;
-    ftrList(iSegm).green    = segIm( y, x, 2) ;
-    ftrList(iSegm).blue     = segIm( y, x, 3) ;
+    allNonZeroIndex = find(xlabels);
+    allZeroIndex = find(xlabels==0);
     
-    ftrList(iSegm).areaSumAbs = sum(xlabels(:)) ./ iSegm;
+% meanshift end color
+    firstNonZeroIndex = allNonZeroIndex(1); % find(xlabels, 1, 'first');
+    [y, x] = ind2sub(size(xlabels),firstNonZeroIndex);
+    ftrList(iSegm).endRed      = segIm( y, x, 1) ;
+    ftrList(iSegm).endGreen    = segIm( y, x, 2) ;
+    ftrList(iSegm).endBlue     = segIm( y, x, 3) ;
+    
+% segment of original image    
+    mask = xlabels;
+    mask3 = uint8(cat(3,xlabels,xlabels,xlabels));
+    imOrig_segment = imOrig .* mask3;
+    segmR = imOrig_segment(:,:,1);
+    segmG = imOrig_segment(:,:,2);
+    segmB = imOrig_segment(:,:,3);
+%     num = numel(imOrig_segment)/3;
+%     segmVect(1,:) = reshape(imOrig_segment(:,:,1), 1, num);
+%     segmVect(2,:) = reshape(imOrig_segment(:,:,2), 1, num);
+%     segmVect(3,:) = reshape(imOrig_segment(:,:,3), 1, num)
+
+%     imOrig_segment( ind2sub(size(xlabels), allZeroIndex) ) = 0;
+    imshow(imOrig_segment,[]);
+% mean segment color from masked original
+    ftrList(iSegm).meanRed      = mean(segmR(logical(mask)));
+    ftrList(iSegm).meanGreen    = mean(segmG(logical(mask)));
+    ftrList(iSegm).meanBlue     = mean(segmB(logical(mask)));
+% modus segment color from masked original    
+    ftrList(iSegm).modusRed     = mode(segmR(logical(mask)));
+    ftrList(iSegm).modusGreen	= mode(segmG(logical(mask)));
+    ftrList(iSegm).modusBlue    = mode(segmB(logical(mask)));
+% median segment color from masked original
+    ftrList(iSegm).medianRed    = median(segmR(logical(mask)));
+    ftrList(iSegm).medianGreen  = median(segmG(logical(mask)));
+    ftrList(iSegm).medianBlue   = median(segmB(logical(mask)));
+
+%     ftrList(iSegm).meanRed      = mean(segmVect(1,:));
+%     ftrList(iSegm).meanGreen    = mean(segmVect(2,:));
+%     ftrList(iSegm).meanblue     = mean(segmVect(3,:));
+% % modus segment color from original    
+%     ftrList(iSegm).modusRed     = mode(segmVect(1,:));
+%     ftrList(iSegm).modusGreen	= mode(segmVect(2,:));
+%     ftrList(iSegm).modusBlue    = mode(segmVect(3,:));
+% % median segment color from original
+%     ftrList(iSegm).medianRed    = median(segmVect(1,:));
+%     ftrList(iSegm).medianGreen  = median(segmVect(2,:));
+%     ftrList(iSegm).medianBlue   = median(segmVect(3,:));
+    
+% absolute and relative areas
+    ftrList(iSegm).areaSumAbs = sum(xlabels(:));
     ftrList(iSegm).areaSumRelIm =  ftrList(iSegm).areaSumAbs * 100.0 / imageArea;
     ftrList(iSegm).eulerNum8 = bweuler( uint16(xlabels) ,8);
 
 % ____________________________________________________
 % others
-
 %     histogram
 % chist
 % hlavni a vedlejší osa
@@ -90,6 +145,11 @@ for iSegm = 1:iSegm_max
     ftrList(iSegm).areaSumRel = ftrList(iSegm).areaSumAbs * 100.0 / areaSumAbs_maxVal; 
 end
 
+disp(ftrList);
+end %function
+
+
+
 %% euler number testing
 % figure(51);
 % SI = 0;
@@ -103,14 +163,3 @@ end
 %         imshow(im,[]); 
 %         title(strcat('i[',num2str(i),'] eul = ',num2str(eul1),'')); axis tight
 % end
-
-
-% eulerNum - genus
-
-% all_areaSumAbs_values = [featureList.areaSumAbs]
-% bar([ftrList.eulerNum]); 
-% bar(all_areaSumAbs_values);
-
-disp(ftrList);
-end
-

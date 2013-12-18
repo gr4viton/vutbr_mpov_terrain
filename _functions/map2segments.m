@@ -34,7 +34,8 @@ global FI; global SX; global SY; global SI;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % debug
- imPath='..\pic\smaller5.png';
+%  imPath='..\pic\smaller5.png';
+ imPath='..\pic\smaller.png';
  writeSegmentedPath='..\out\'; 
  writeIndexedPath='..\out\'; 
  writeStatsPath='..\out\'; 
@@ -90,7 +91,7 @@ end
 %% calculate feature lists for individual segments
 disp('> Statistics');
     disp('  * Calculating feature list for individual segments');
-    ftrList = GET_features(segIm, labels, modes, regsize, grad, conf);
+    ftrList = GET_features(im_orig, segIm, labels, modes, regsize, grad, conf);
     disp('  * Done');
 
 %% shrink feature-close segments togeather
