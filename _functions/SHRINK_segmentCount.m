@@ -1,4 +1,4 @@
-function [moreSegIm] = SHRINK_numOfSegments(segIm)
+function [fusedSegIm] = SHRINK_numOfSegments(segIm, segImLUV)
 %SHRINK_numOfSegments Shrink feature-close segments togeather
 %@brief     this function shirnks the number of segments
 %           as the parameters of different segmented areas are alike
@@ -6,10 +6,10 @@ function [moreSegIm] = SHRINK_numOfSegments(segIm)
 %@param[in] [im_indx] image with many indexed segments 
 %           (optional?) -do not need image of segments or only segments colors?
 %           [im_indx_RGB] matrix with RGB color
-%@return    [moreSegIm] image with lesser count of indexed segments
+%@return    [fusedSegIm] image with lesser count of indexed segments
 
-
-moreSegIm = segIm;
+% if(segIm
+fusedSegIm = segIm;
 
 
 

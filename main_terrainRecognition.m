@@ -2,6 +2,8 @@
 % Segmentace satelitních map
 % Pùlsemestrální projekt è.2
 
+function main_terrainRecognition(speedUp)
+
 %% Zadání:
 % -	Úkolem studentù je se z pøedložených satelitních snímkù vysegmetovat jednotlivé druhy terénù. 
 % - K rozhodnutí o pøíslušnosti do jednotlivých skupin, musí být použito tzn. uèení bez uèitele (napø. algoritmus MeanShift). 
@@ -21,7 +23,7 @@
 %% Vypracování
 
 %% clean-up & dependencies
-close all; clc; clear; 
+% close all; clc; clear; 
 addpath(genpath('.\_functions'));
 
 %% set figure index
@@ -39,11 +41,26 @@ disp('main_terrainRecognition started');
 % ob{i} = imread(strcat('pic\small_map.png')); fn{i}=strcat('pic\small_map.png');
 % ob{i} = imread(strcat('pic\smaller.png')); fn{i}=strcat('pic\smaller.png');
 
+% imMax = imread('pic\map5.png');
+imPath = 'd:\EDUC\m1\V_MPOV\proj_terrain_recognition\TRY\pic\map5.png';
+imMax = imread(imPath);
 
-map2segments('pic\smaller.png', 1, 1, 1, 1);
 
+[pathstr,name,ext] = fileparts(imPath);
+
+% speedUp = 2;
+disp(num2str(speedUp));
+for sc=logspace( -1, 0, 7);
+    im_scaled = imresize( imMax, sc );
+    im_path = [pathstr,'\',name,'_',num2str(sc*100),'_',num2str(speedUp),ext]
+    imwrite(im_scaled,im_path);
+    map2segments(im_path, speedUp, 1,1,1,1 );
+end
 
 disp('main_terrainRecognition ended');
+
+
+end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % napady 

@@ -1,17 +1,33 @@
-function [] = WRITE_statistics( ftrList, imOrig, imFileName, writeStatsPath )
+function [] = WRITE_statistics( ftrList, imOrig, imPath, writeStatsPath )
 %WRITE_STATISTICS writes segments feature-lists into stats-file
 %   ...
 
-if writeStatsPath~=0
+if writeStatsPath==0
+    return;
+end
+
 disp('> Writing feature lists data to statistics file');
 
-% string constants
+statsDirName = '\_stats\';
+[imPathStr,imFileName,imExt] = fileparts(imPath);
+% imFileName = [imFileName,ext];
+if(writeStatsPath==1)
+    writeStatsPath = [imPathStr,statsDirName];
+end
+    mkdir(writeStatsPath);
+
+
+%% string constants
 statsPrefix = 'stats_';
 statsExtension = '.csv';
+
+% delimiters
 delimVal = ';\t'; % delimiter of values
-% delimHead = ';\t'; % delimiter of headtitles
 % delimVal = '; '; % delimiter of values 
+% delimHead = ';\t'; % delimiter of headtitles
 delimHead = '; '; % delimiter of headtitles
+
+% other
 newLine = char(10);
 % first line of stats-file
 valueCell_strFormat = ['%s',delimVal];
@@ -19,7 +35,7 @@ headerCell_strFormat = ['%s',delimHead];
 
 
 %% name of stats-file
-statsFileName = strcat(writeStatsPath,statsPrefix,imFileName,statsExtension);
+statsFileName = strcat(writeStatsPath,statsPrefix,imFileName,imExt,statsExtension);
 
 %%  Extract field data
 featureNames = fieldnames(ftrList)';
@@ -46,23 +62,18 @@ str = sprintf(['%s',head_strFormat, newLine], str, featureNames{:});
 % fprintf(fid, newLine);
 
 % one row
-oneRow_strFormat = repmat(valueCell_strFormat, 1, features_sum)
-% allValues_strFormat = repmat( [oneRow_strFormat, newLine], size(values, 3), 1)
-%     fprintf(fid, allValues_strFormat, values{:});
-% for i=1:17
-% disp( ['values[',num2str(i),']=',values{i}]);
-% end
+oneRow_strFormat = repmat(valueCell_strFormat, 1, features_sum);
 for fi = 0:segm_sum-1
     pointer = fi*features_sum;
     str = sprintf(['%s',oneRow_strFormat, newLine], str, ...
         values{ pointer+1 : pointer + features_sum });
-% disp(str)
 end
 
 %% display whole message 
-disp('[FILE START]');
-disp(str)
-disp('[FILE END]');
+% disp('[FILE START]');
+% disp(str)
+% disp('[FILE END]');
+
 %% Write stats from string to CSV file
 fid = fopen(statsFileName, 'wt');
 fprintf(fid,'%s',str);
@@ -71,7 +82,6 @@ fclose(fid);
 disp(strcat('  * Statistics of segmented image "',imFileName, '"', ...
     ' > have been written to file: "',statsFileName, '"'));
 
-end % writeStatsPath~=0
 
 end
 

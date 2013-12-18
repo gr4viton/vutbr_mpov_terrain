@@ -19,11 +19,7 @@ ftrList(iSegm_max).segmIndx = iSegm_max;
 % fL = @(y,x) ftrList(uint16(labels(y,x)+1));
 % not functional [pointer to the array of struct] ?
 
-%% nope
-% for i = 1:fi_max
-%     disp([ 'featureList(',num2str(i),')=',num2str( ftrList(i).areaSumAbs ) ])
-% end
-    imageArea = size(segIm,1)*size(segIm,2);
+imageArea = size(segIm,1)*size(segIm,2);
     
         
 %% first loop through - for inicializing zero values and count the one-loop countable features
@@ -31,7 +27,7 @@ for iSegm = 1:iSegm_max
 % stats for segments as for a group of areas
     
 % ____________________________________________________
-% inicialization
+% inicialization (in this order they will show up in the header in stats file
     ftrList(iSegm).segmIndx = iSegm; % segment index number
     ftrList(iSegm).areaSumAbs = 0; % sum of all the pixels
     ftrList(iSegm).areaSumRel = 0.0; % area sum relatively to the others - max area = [100%]
@@ -64,7 +60,7 @@ for iSegm = 1:iSegm_max
     allNonZeroIndex = find(xlabels);
 %     allZeroIndex = find(xlabels==0);
     
-% meanshift end color
+% meanshift end color - the color to which segment iterated to
     firstNonZeroIndex = allNonZeroIndex(1); % find(xlabels, 1, 'first');
     [y, x] = ind2sub(size(xlabels),firstNonZeroIndex);
     ftrList(iSegm).endRed      = segIm( y, x, 1) ;
@@ -74,7 +70,8 @@ for iSegm = 1:iSegm_max
 % segment of original image    
     mask = xlabels;
     mask3 = uint8(cat(3,xlabels,xlabels,xlabels));
-    imOrig_segment = imOrig .* mask3;
+    imOrig_segment = imOrig .* mask3; % masking of original
+    % RGB of masked original
     segmR = imOrig_segment(:,:,1);
     segmG = imOrig_segment(:,:,2);
     segmB = imOrig_segment(:,:,3);
@@ -93,11 +90,14 @@ for iSegm = 1:iSegm_max
     ftrList(iSegm).medianBlue   = median(segmB(logical(mask)));
 
 % absolute and relative areas
-    ftrList(iSegm).areaSumAbs = sum(xlabels(:));
+    ftrList(iSegm).areaSumAbs = regsize(iSegm); %sum(xlabels(:));
     ftrList(iSegm).areaSumRelIm =  ftrList(iSegm).areaSumAbs * 100.0 / imageArea;
     ftrList(iSegm).eulerNum8 = bweuler( uint16(xlabels) ,8);
 
+    %% chce ještì!!
+%     h-momenty šikmost ostrost a rozptyl barev
 % ____________________________________________________
+
 % others
 %     histogram
 % chist
@@ -126,7 +126,9 @@ for iSegm = 1:iSegm_max
     ftrList(iSegm).areaSumRel = ftrList(iSegm).areaSumAbs * 100.0 / areaSumAbs_maxVal; 
 end
 
-disp(ftrList);
+% display feature list fields = individual feature names
+% disp(ftrList);
+
 end %function
 
 
