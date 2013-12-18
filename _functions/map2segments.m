@@ -55,7 +55,7 @@ if(doFigures == 1)
 end
 
 %% preprocessing filtering
-im = PRE_processImage(im);
+im = PRE_processImage(im, doFigures);
 
 %% mean shift
 disp('> Mean-shift computation');

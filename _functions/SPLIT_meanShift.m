@@ -43,13 +43,13 @@ spatialBandWidth    = uint16(im_allPix^eSpatialPower * etalon_spatialConstant);
 rangeBandWidth      = im_allPix^eRangePower * etalon_rangeConstant;
 minimumRegionArea   = uint16(im_allPix^eRegionPower * etalon_regionConstant)  ;   
 
-spatialBandWidth    = 100
-rangeBandWidth      = 5
-minimumRegionArea   = 50
+% spatialBandWidth    = 100
+% rangeBandWidth      = 5
+% minimumRegionArea   = 50
 
 
 %% calculate Mean Shift
-disp(['  * Executing meanshift with speedup[1-3]=',num2str(speedUp),'']);
+disp(['  * Executing meanshift','']);
 tic; % measure the time of execution for meanShift
 [fimg, labels, modes, regsize, grad, conf] = edison_wrapper(...
     im, @RGB2Luv,...

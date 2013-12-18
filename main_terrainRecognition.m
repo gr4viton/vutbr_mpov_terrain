@@ -50,7 +50,8 @@ imMax = imread(imPath);
 
 % speedUp = 2;
 disp(num2str(speedUp));
-for sc=logspace( -1, 0, 7);
+% for sc=logspace( -1, 0, 7);
+for sc=linspace( 0.1, 0.3, 4);
     im_scaled = imresize( imMax, sc );
     im_path = [pathstr,'\',name,'_',num2str(sc*100),'_',num2str(speedUp),ext]
     imwrite(im_scaled,im_path);
