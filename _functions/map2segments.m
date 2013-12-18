@@ -52,8 +52,8 @@ imFileName = [name,ext];
 disp( strcat('  * Image-name "', ' ', name, ext, '", in "', pathstr,'"') );
 
 % imread
-im_orig = imread(imPath);
-im = im_orig;
+imOrig = imread(imPath);
+im = imOrig;
 
 %% plot image
 if(doFigures == 1)
@@ -91,7 +91,7 @@ end
 %% calculate feature lists for individual segments
 disp('> Statistics');
     disp('  * Calculating feature list for individual segments');
-    ftrList = GET_features(im_orig, segIm, labels, modes, regsize, grad, conf);
+    ftrList = GET_features(imOrig, segIm, labels, modes, regsize, grad, conf);
     disp('  * Done');
 
 %% shrink feature-close segments togeather
@@ -102,7 +102,7 @@ SHRINK_segmentCount(ftrList);
 WRITE_images(segIm, indxIm, writeSegmentedPath, writeIndexedPath, imFileName);
     
 %% write statistical data to file - if specified
-WRITE_statistics(ftrList, imFileName, writeStatsPath);
+WRITE_statistics(ftrList, imOrig, imFileName, writeStatsPath);
 
 disp('map2segments - ended');
 

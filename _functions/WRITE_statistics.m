@@ -1,4 +1,4 @@
-function [] = WRITE_statistics( ftrList, imFileName, writeStatsPath )
+function [] = WRITE_statistics( ftrList, imOrig, imFileName, writeStatsPath )
 %WRITE_STATISTICS writes segments feature-lists into stats-file
 %   ...
 
@@ -8,10 +8,10 @@ disp('> Writing feature lists data to statistics file');
 % string constants
 statsPrefix = 'stats_';
 statsExtension = '.csv';
-% delimVal = ';\t\t'; % delimiter of columns
-% delimHead = ';\t'; % delimiter of columns
-delimVal = '; '; % delimiter of columns
-delimHead = '; '; % delimiter of columns
+delimVal = ';\t'; % delimiter of values
+% delimHead = ';\t'; % delimiter of headtitles
+% delimVal = '; '; % delimiter of values 
+delimHead = '; '; % delimiter of headtitles
 newLine = char(10);
 % first line of stats-file
 valueCell_strFormat = ['%s',delimVal];
@@ -33,8 +33,11 @@ features_sum = numel(featureNames);
 segm_sum = size(values, 3);
 
 %% write stats to string
+width = size(imOrig,2);
+height = size(imOrig,1);
 firstLine = ['Feature list for individual segments of image: "',imFileName,...
-    '". nSegments[',num2str(segm_sum),']. Delimiter = "',delimVal,'". '];
+    '" - resolution [',num2str(width),'×',num2str(height),']; nSegments=',...
+    num2str(segm_sum),'; delimiter = "',delimVal,'"'];
 str = sprintf('%s', [firstLine, newLine]);
 
 % columns' headers
@@ -56,8 +59,10 @@ for fi = 0:segm_sum-1
 % disp(str)
 end
 
+%% display whole message 
+disp('[FILE START]');
 disp(str)
-
+disp('[FILE END]');
 %% Write stats from string to CSV file
 fid = fopen(statsFileName, 'wt');
 fprintf(fid,'%s',str);

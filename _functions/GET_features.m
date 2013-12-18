@@ -12,7 +12,7 @@ iSegm_max =  max(labels(:));
 disp(['    - Number of segments = ', num2str(iSegm_max+1)]);
 
 % predefining the size of featureList
-ftrList(iSegm_max).segmentIndex = iSegm_max;
+ftrList(iSegm_max).segmIndx = iSegm_max;
 
 % [ featureList(index) ] - get featureList that corresponds to labels(y,x)
 % fL = @(y,x) featureList(fi(y,x));
@@ -32,7 +32,7 @@ for iSegm = 1:iSegm_max
     
 % ____________________________________________________
 % inicialization
-    ftrList(iSegm).segmentIndex = iSegm; % segment index number
+    ftrList(iSegm).segmIndx = iSegm; % segment index number
     ftrList(iSegm).areaSumAbs = 0; % sum of all the pixels
     ftrList(iSegm).areaSumRel = 0.0; % area sum relatively to the others - max area = [100%]
     ftrList(iSegm).areaSumRelIm = 0.0; % area sum relatively to whole image = [x%]
@@ -62,7 +62,7 @@ for iSegm = 1:iSegm_max
     xlabels = xlabels ./ iSegm; % [one] - segment | [zero] - not segment
     
     allNonZeroIndex = find(xlabels);
-    allZeroIndex = find(xlabels==0);
+%     allZeroIndex = find(xlabels==0);
     
 % meanshift end color
     firstNonZeroIndex = allNonZeroIndex(1); % find(xlabels, 1, 'first');
@@ -78,13 +78,7 @@ for iSegm = 1:iSegm_max
     segmR = imOrig_segment(:,:,1);
     segmG = imOrig_segment(:,:,2);
     segmB = imOrig_segment(:,:,3);
-%     num = numel(imOrig_segment)/3;
-%     segmVect(1,:) = reshape(imOrig_segment(:,:,1), 1, num);
-%     segmVect(2,:) = reshape(imOrig_segment(:,:,2), 1, num);
-%     segmVect(3,:) = reshape(imOrig_segment(:,:,3), 1, num)
-
-%     imOrig_segment( ind2sub(size(xlabels), allZeroIndex) ) = 0;
-    imshow(imOrig_segment,[]);
+%     imshow(imOrig_segment,[]);
 % mean segment color from masked original
     ftrList(iSegm).meanRed      = mean(segmR(logical(mask)));
     ftrList(iSegm).meanGreen    = mean(segmG(logical(mask)));
@@ -98,18 +92,6 @@ for iSegm = 1:iSegm_max
     ftrList(iSegm).medianGreen  = median(segmG(logical(mask)));
     ftrList(iSegm).medianBlue   = median(segmB(logical(mask)));
 
-%     ftrList(iSegm).meanRed      = mean(segmVect(1,:));
-%     ftrList(iSegm).meanGreen    = mean(segmVect(2,:));
-%     ftrList(iSegm).meanblue     = mean(segmVect(3,:));
-% % modus segment color from original    
-%     ftrList(iSegm).modusRed     = mode(segmVect(1,:));
-%     ftrList(iSegm).modusGreen	= mode(segmVect(2,:));
-%     ftrList(iSegm).modusBlue    = mode(segmVect(3,:));
-% % median segment color from original
-%     ftrList(iSegm).medianRed    = median(segmVect(1,:));
-%     ftrList(iSegm).medianGreen  = median(segmVect(2,:));
-%     ftrList(iSegm).medianBlue   = median(segmVect(3,:));
-    
 % absolute and relative areas
     ftrList(iSegm).areaSumAbs = sum(xlabels(:));
     ftrList(iSegm).areaSumRelIm =  ftrList(iSegm).areaSumAbs * 100.0 / imageArea;
@@ -123,7 +105,6 @@ for iSegm = 1:iSegm_max
 % orientace
 % geometric moment?
 
-% mean color RGB - of default image or segmented color => is it the same?
 % stats for whole image - from meanshift & kmeans?
 % elipsoidnost jednotlivých? -> natoèení a tak
 
