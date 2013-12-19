@@ -41,10 +41,6 @@ spatialBandWidth = spt_min + (spt_max-spt_min) * (relation)^spt_pow; %
 rangeBandWidth   = rng_min + (rng_max-rng_min) * (relation)^rng_pow; %
 minimumRegionArea= reg_min + (rng_max-reg_min) * (relation)^reg_pow; %
 
-spatialBandWidth    = 10
-rangeBandWidth      = 3
-minimumRegionArea   = 30
-
 
 %% calculate Mean Shift
 disp(['  * Executing meanshift','']);

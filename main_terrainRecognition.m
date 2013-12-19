@@ -1,27 +1,16 @@
-%% MPOV – Poèítaèové vidìní
-% Segmentace satelitních map
-% Pùlsemestrální projekt è.2
-
-% function main_terrainRecognition(speedUp)
 function main_terrainRecognition()
-
-%% Zadání:
-% -	Úkolem studentù je se z pøedloenıch satelitních snímkù vysegmetovat jednotlivé druhy terénù. 
-% - K rozhodnutí o pøíslušnosti do jednotlivıch skupin, musí bıt pouito tzn. uèení bez uèitele (napø. algoritmus MeanShift). 
-% -	Segmentaci proveïte hierarchickım zpùsobem z dùvodu pøesnìjšího rozdìlení oblastí na menší celky. 
-% -	Správnost segmentace a rozdìlení do tøíd bude otestováno na zvláštní mnoinì dat, ke které studenti nebudou mít pøístup. 
-% -	Následnì jednotlivé vysegmentované oblasti vhodnì statisticky analyzujte a v dokumentaci zhodnote. 
-% -	Statistické metody konzultujte s vedoucím! Projekt bude vypracován v Matlabu.
-% 
-%% Vstupy: 
-% -	Sada satelitních snímkù
-% 
-%% Vıstupy: 
-% -	Segmentovanı snímek a indexovanı snímek 
-% -	Textovı soubor se statistickımi hodnotami jednotlivıch oblastí 
-% -	Dokumentace
-
-%% Vypracování
+% /*********
+% @subject  MPOV – Computer vision (Poèítaèové vidìní)
+% @subtitle Half-term project, Pùlsemestrální projekt 
+% @task#    2
+% @project  Segmentation of sattelite maps - Segmentace satelitních map
+% @filename main_terrainRecognition.m
+% @author   Bc. Daniel Davídek <danieldavidk@gmail.com>
+%           Bc. Peter Molèany <xmolca00@stud.feec.vutbr.cz>
+% @date     2013_12_10
+% @brief    this script demonstrates map2segments functionality on various
+%           prescaled satelite images (maps)
+% *********/
 
 %% clean-up & dependencies
 close all; clc; clear; 
@@ -32,47 +21,70 @@ global FI; FI = 1;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp('main_terrainRecognition started');
-%% segment individual maps
-% for i=1:6
-%     ob{i} = imread(strcat('pic\map',num2str(i),'.png'));
-%     fn{i} = strcat('pic\map',num2str(i),'.png');
-% end
-% i=7;
-% ob{i} = imread(strcat('pic\small.png')); fn{i}=strcat('pic\small.png'); i=i+1;
-% ob{i} = imread(strcat('pic\small_map.png')); fn{i}=strcat('pic\small_map.png');
-% ob{i} = imread(strcat('pic\smaller.png')); fn{i}=strcat('pic\smaller.png');
 
-% imMax = imread('pic\map5.png');
-% imPath = 'd:\EDUC\m1\V_MPOV\proj_terrain_recognition\TRY\pic\map5.png';
-imPath = 'd:\EDUC\m1\V_MPOV\proj_terrain_recognition\TRY\pic\map2.png';
+%% load individual maps paths
+nIm = 6;
+for iIm=1:nIm 
+    imPath_all{iIm} = ['pic\map',num2str(iIm),'.png'];
+end
+
+%% chose image index
+% nice = 5
+% nice & quick = 2
+iChosen = 2;
+
+%% load chosen image
+imPath = imPath_all{iChosen};
 imMax = imread(imPath);
-
-
 [pathstr,name,ext] = fileparts(imPath);
 
 
 
+%% just segm with defaults
+% disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+% disp('map2segmentation - defaults');
+% sc = 0.1;
+%     FI = FI+1;
+%     im_scaled = imresize( imMax, sc );
+%     im_path = [pathstr,'\',name,'_',num2str(sc*100),ext]
+%     imwrite(im_scaled,im_path);
+%     map2segments_defArgs(im_path);
 
-% try speedUp execution times for different resolutions
+%% try different tresholds
+% disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+% disp('trying different tresholds');
+% speedUp = 2;
+% sc = 0.1;
+% lumTreshold = -1; colTreshold = -1; 
+% for colTreshold=linspace(0.1,1.5,5)
+% % for lumTreshold=linspace(10,20,4) 
+%     FI = FI+1;
+%     im_scaled = imresize( imMax, sc );
+%     im_path = [pathstr,'\',name,'_',num2str(sc*100),'_',...
+%         num2str(lumTreshold),num2str(colTreshold),ext]
+%     imwrite(im_scaled,im_path);
+%     map2segments(im_path, 1,1,1,1, speedUp, [lumTreshold, colTreshold] );
+% end
+
+
+%% try different scales - NICE :)
+disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+disp('trying different scales');
 speedUp = 2;
-disp(num2str(speedUp));
+lumTreshold = -1; colTreshold = -1; 
 % for sc=logspace( -1, 0, 7);
-% for sc=linspace( 0.2, 0.3, 4);
-% for sc = 0.2
-% sc = 0.2;
-sc = 0.1;
-
-lumTreshold = -1; % typical - [0 -> 20]
-colTreshold = -1; 
+for sc=linspace( 0.1, 0.3, 4);
     FI = FI+1;
     im_scaled = imresize( imMax, sc );
-    im_path = [pathstr,'\',name,'_',num2str(sc*100),ext]
+    im_path = [pathstr,'\',name,'_',num2str(sc*100),'_',...
+        num2str(lumTreshold),num2str(colTreshold),ext]
     imwrite(im_scaled,im_path);
-%     map2segments(im_path, 1,1,1,1, speedUp, [lumTreshold, colTreshold] );
-    map2segments_defArgs(im_path);
+    map2segments(im_path, 1,1,1,1, speedUp, [lumTreshold, colTreshold] );
+end
 
+    
+%% end
 disp('main_terrainRecognition ended');
-
 
 end
 

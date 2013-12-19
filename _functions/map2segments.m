@@ -49,7 +49,7 @@ global FI; global SX; global SY; global SI;
 % speedUp = 2; % [default]
 
 %% read image 
-
+% default arguments
 argMax = 7;
 defarg = cell(argMax-1);
 defarg = {1,1,1,1,2,[-1,-1]};
@@ -70,7 +70,7 @@ if nargin < 1
     if(narign <= argMax-5)
         writeSegmentedPath = defarg(argMax-5); end;
 end
-if(speedUp <0) speedUp = defarg(5);
+if(speedUp <0), speedUp = defarg(5); end;
     
 [pathstr,name,ext] = fileparts(imPath);
 disp( strcat('  * Image-name "', ' ', name, ext, '", in "', pathstr,'"') );
