@@ -12,7 +12,7 @@ if writeSegmentedPath~=0
     if(writeSegmentedPath==1)
         writeSegmentedPath = [imPathStr,segmImDirName];
     end    
-    mkdir(writeSegmentedPath);
+[s, mess, messid] = mkdir(writeSegmentedPath);
 
     disp('> Write segmented images to disk');
     segmentPrefix = 'segm_';
@@ -26,7 +26,7 @@ if writeIndexedPath~=0
     if(writeIndexedPath==1)
         writeIndexedPath = [imPathStr,segmImDirName];
     end
-    mkdir(writeIndexedPath);
+[s, mess, messid] = mkdir(writeIndexedPath);
     
     % adjust indexes into full gray-scale 
     indxPrefix = 'indx_';

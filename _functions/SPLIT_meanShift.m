@@ -74,11 +74,12 @@ else
 end
 
 %% draw segmented & indexed image
+nSegm = max(labels(:))+1;
 if(doFigures == 1)
     disp('  * Show Mean-shift segmented image');
-    DRAW_image(segImRGB, 'segmented image (meanshift)');
+    DRAW_image(segImRGB, ['segmented image (meanshift); nSegm=',num2str(nSegm),'']);
     disp('  * Show Mean-shift indexed image');
-    DRAW_image(indxIm, 'indexed image of segments');
+    DRAW_image(indxIm, ['indexed image of segments; nSegm=',num2str(nSegm),'']);
 end
    
 

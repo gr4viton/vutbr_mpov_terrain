@@ -14,7 +14,7 @@ statsDirName = '\_stats\';
 if(writeStatsPath==1)
     writeStatsPath = [imPathStr,statsDirName];
 end
-    mkdir(writeStatsPath);
+[s, mess, messid] = mkdir(writeStatsPath);
 
 
 %% string constants

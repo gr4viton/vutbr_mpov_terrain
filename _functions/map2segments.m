@@ -47,7 +47,7 @@ im = imOrig;
 
 %% plot original image
 if(doFigures == 1)
-    figure(FI); SX = 2; SY = 2; SI = 0;
+    figure(FI); SX = 2; SY = 3; SI = 0;
     % draw input image
     disp('  * Show input image');
     tit=['original res=',num2str(size(im,1)),'×',num2str(size(im,2))];
@@ -65,7 +65,7 @@ disp('> Mean-shift computation');
 
 %% shrink feature-close segments togeather
 disp('> Shrink feature-close segments togeather');
-SHRINK_segmentCount(labels,segImLUV);
+SHRINK_segmentCount(labels,segImLUV,doFigures);
 
 %% calculate feature lists for individual segments
 disp('> Statistics');
