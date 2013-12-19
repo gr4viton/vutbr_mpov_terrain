@@ -47,11 +47,11 @@ im = imOrig;
 
 %% plot original image
 if(doFigures == 1)
-    FI = uint8(rand(1)*1000);
-    FI=FI+1; figure(FI); SX = 3; SY = 1; SI = 0;
+    figure(FI); SX = 2; SY = 2; SI = 0;
     % draw input image
     disp('  * Show input image');
-    DRAW_image(im, 'original');
+    tit=['original res=',num2str(size(im,1)),'×',num2str(size(im,2))];
+    DRAW_image(im, tit);
 end
 
 %% preprocessing filtering
@@ -59,35 +59,18 @@ im = PRE_processImage(im, doFigures);
 
 %% mean shift
 disp('> Mean-shift computation');
-
 % get the segmented RGB image and other variables - calculate Mean Shift
-[segIm, segImLUV, labels, modes, regsize, grad, conf] = SPLIT_meanShift(im, speedUp);
-
-%% draw segmented & indexed image
-if max(max(labels)) > 255
-    indxIm = uint16(labels);
-else
-    indxIm = uint8(labels);
-end
-
-% plot them
-if(doFigures == 1)
-    disp('  * Show Mean-shift segmented image');
-    DRAW_image(segIm, 'segmented image (meanshift)');
-    disp('  * Show Mean-shift indexed image');
-    DRAW_image(indxIm, 'indexed image of segments');
-end
-   
-%% calculate feature lists for individual segments
-disp('> Statistics');
-    disp('  * Calculating feature list for individual segments');
-    ftrList = GET_features(imOrig, segIm, labels, modes, regsize, grad, conf);
-    disp('  * Done');
+[segIm, segImLUV, indxIm, labels, modes, regsize, grad, conf] ...
+    = SPLIT_meanShift(im, speedUp, doFigures);
 
 %% shrink feature-close segments togeather
 disp('> Shrink feature-close segments togeather');
-SHRINK_segmentCount(ftrList, segImLUV);
+SHRINK_segmentCount(labels,segImLUV);
 
+%% calculate feature lists for individual segments
+disp('> Statistics');
+    ftrList = GET_features(imOrig, segIm, labels, modes, regsize, grad, conf);
+    
 %% write segmented images - if specified
 WRITE_images(segIm, indxIm, writeSegmentedPath, writeIndexedPath, imPath);
     

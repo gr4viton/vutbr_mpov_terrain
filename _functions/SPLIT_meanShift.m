@@ -1,5 +1,6 @@
-function [segImRGB, segImLUV, labels, modes, regsize, grad, conf] ...
-    = SPLIT_meanShift(im, speedUp)
+function [segImRGB, segImLUV, indxIm, ...
+    labels, modes, regsize, grad, conf] ...
+    = SPLIT_meanShift(im, speedUp, doFigures)
 
 %% resolution ~ execution time message
 numCol = '';
@@ -25,27 +26,24 @@ steps       = 2; % filtering and region fusion [default]
 
 %% new set of input parameters
 % the empirical relation between image resolution and main mean-shift parameters
-etalon_allPix= 1468*805; % the empirical map-set resolution with good results
+allPx_const = 1468*805; % the empirical map-set resolution with good results
 
-eSpatialPower = 1;
-etalon_spatialConstant = 100 / etalon_allPix^eSpatialPower;
-
-eRangePower = 1;
-etalon_rangeConstant = 5 / etalon_allPix^eRangePower;
-
-eRegionPower = 1;
-etalon_regionConstant = 50 / etalon_allPix^eRegionPower;
+spt_min = 10;   spt_max = 100;  spt_pow = 1;
+rng_min = 3;    rng_max = 5;    rng_pow = 1;
+reg_min = 30;   reg_min = 50;   reg_pow = 1;
 
 % all pixels of this image 
-im_allPix = size(im,1)*size(im,2);
+allPx = size(im,1)*size(im,2);
+            rng = rng_min + (rng_max-rng_min) * (allPx/allPx_const)^1; %
 
-spatialBandWidth    = uint16(im_allPix^eSpatialPower * etalon_spatialConstant);
-rangeBandWidth      = im_allPix^eRangePower * etalon_rangeConstant;
-minimumRegionArea   = uint16(im_allPix^eRegionPower * etalon_regionConstant)  ;   
+relation = allPx/allPx_const;
+spatialBandWidth = spt_min + (spt_max-spt_min) * (relation)^spt_pow; %
+rangeBandWidth   = rng_min + (rng_max-rng_min) * (relation)^rng_pow; %
+minimumRegionArea= reg_min + (rng_max-reg_min) * (relation)^reg_pow; %
 
-% spatialBandWidth    = 100
-% rangeBandWidth      = 5
-% minimumRegionArea   = 50
+spatialBandWidth    = 10
+rangeBandWidth      = 3
+minimumRegionArea   = 30
 
 
 %% calculate Mean Shift
@@ -55,9 +53,9 @@ tic; % measure the time of execution for meanShift
     im, @RGB2Luv,...
     'steps',    steps, ...
     'SpeedUp',  speedUp, ...
-    'SpatialBandWidth',     spatialBandWidth, ...
+    'SpatialBandWidth',     round(spatialBandWidth), ...
     'RangeBandWidth',       rangeBandWidth, ...
-    'MinimumRegionArea',    minimumRegionArea ...
+    'MinimumRegionArea',    round(minimumRegionArea) ...
     );
 
 disp(['    - Done in ',num2str(toc),'s']);
@@ -65,9 +63,24 @@ disp(['    - Done in ',num2str(toc),'s']);
 % DRAW_image(im,  tit);
 % DRAW_image(Luv2RGB(fimg), tit);
 
+%% output
 segImLUV = fimg;
 segImRGB = Luv2RGB(segImLUV);
 
+if max(labels(:)) > 255
+    indxIm = uint16(labels);
+else
+    indxIm = uint8(labels);
+end
+
+%% draw segmented & indexed image
+if(doFigures == 1)
+    disp('  * Show Mean-shift segmented image');
+    DRAW_image(segImRGB, 'segmented image (meanshift)');
+    disp('  * Show Mean-shift indexed image');
+    DRAW_image(indxIm, 'indexed image of segments');
+end
+   
 
 
 end %fcn

@@ -1,4 +1,4 @@
-function [fusedSegIm] = SHRINK_numOfSegments(segIm, segImLUV)
+function [fusedSegIndx] = SHRINK_numOfSegments(labels,segImLUV)
 %SHRINK_numOfSegments Shrink feature-close segments togeather
 %@brief     this function shirnks the number of segments
 %           as the parameters of different segmented areas are alike
@@ -9,10 +9,179 @@ function [fusedSegIm] = SHRINK_numOfSegments(segIm, segImLUV)
 %@return    [fusedSegIm] image with lesser count of indexed segments
 
 % if(segIm
-fusedSegIm = segIm;
+
+iSegm_max =  max(labels(:));
+
+% initialize triangle matrix of color-differences (= distances)
+mDist = zeros(iSegm_max);
+% initialize color vector for all segments
+col = zeros(iSegm_max,3);
+% which vector indicies represent the color value in Luv space
+colVect = 1:2;
+
+%     figure
+%     imshow(Luv2RGB(segImLUV),[]);
+    
+%% anonymous function for distance squared
+dist2 = @(a,b) (a(1)-b(1))^2 + (a(2)-b(2))^2
+
+% get color of all segments in LUV space 
+for iSegm=1:iSegm_max
+    % get individual segments of index iSegm
+    xlabels = labels; 
+    xlabels(xlabels~=iSegm) = 0;
+    xlabels = xlabels ./ iSegm; % [one] - segment | [zero] - not segment
+    
+    % get color of this segment in LUV space 
+    firstNonZeroIndex = find(xlabels,1);
+    [y, x] = ind2sub(size(xlabels),firstNonZeroIndex);
+    col(iSegm,:) = segImLUV( y, x, :);
+%     allNonZeroIndex = find(xlabels);
+%     allZeroIndex = find(xlabels==0);
+
+    % treshold distance - could get it from mean/median/modus of distances
+    % but implicite value is good enaugh
+    distTreshold = 5;
+    dist2Treshold = distTreshold^2;
+    
+    %% for each get the 
+    % get triangle matrix of distances between individual segment colors
+    for jSegm=iSegm:-1:1
+        % skip main diagonal
+        if(iSegm == jSegm), continue; end;
+        % get the distance if this segment was not reindexed jet
+        if( mDist(jSegm,jSegm)==0 )
+            mDist(iSegm, jSegm) = dist2(col(iSegm,colVect),col(jSegm,colVect));
+            % iSegm & jSegm are close together enaugh
+            if( mDist(iSegm, jSegm) < distTreshold )
+                % mark that iSegm & jSegm will be together
+                if( mDist(iSegm,iSegm)==0 ) 
+                    % iSegment did not matched any other yet
+                    mDist(iSegm,iSegm) = iSegm;
+                    mDist(jSegm,jSegm) = iSegm;
+                    % not needed 
+                    mDist(jSegm,iSegm) = iSegm;
+                else
+                    % iSegment already has a companion 
+                    % -> jSegment will be the same as iSegment companion(s)
+                    mDist(jSegm,jSegm) = mDist(iSegm,iSegm);
+                    % not needed
+                    mDist(jSegm,iSegm) = mDist(iSegm,iSegm);
+                end
+            end
+        end
+    end %for jSegm
+end %for iSegm
+
+dia = diag(mDist);
+% dia(i) = companion-segment index
+% so every segment (i) will be re-labeled to index dia(i)
+% with a mean color of all of them
+
+% if alreadyClustered(i) == 1 -> this iSegm cluster segments were already reindexed
+alreadyClustered = zeros(iSegm_max,1);
+
+% get mean color for each segment cluster
+for iSegm=1:iSegm_max
+    clusterIndexes = find(dia==iSegm); % get indexes of this iSegm cluster
+    nCluster = numel(clusterIndexes); % number of segments in this cluster
+    if(nCluster == 0) 
+        % this iSegm segment has no companion = not a part of any cluster
+        continue;
+    end
+    if(alreadyClustered(iSegm) == 1)
+        % these iSegm cluster segments were already reindexed
+        continue;
+    end
+    % mark that we will reinde this iSegm cluster segments -> for not doing it multiple times
+    alreadyClustered(iSegm) = 1;
+    
+    % add individual colors
+    clusterColor = zeros(1,3);
+    for i=1:nCluster
+        clusterColor(1,:) = clusterColor(1,:) + col( clusterIndexes(i), : );
+    end
+    % count the mean color value ->
+    clusterColor = clusterColor / nCluster;
+    
+    %% give all segments from this cluster - mean color in LUV image
+    % mask together individual segments of this iSegm cluster
+    clusterLabelIndx = 0;
+    aaa = find(labels==clusterIndexes(i))
+    for i=1:nCluster
+        clusterLabelIndx = [clusterLabelIndx; find(labels==clusterIndexes(i))];
+    end
+    % now there are all indexes (of position space in image) of all
+    % segments of this cluster in the variable [clusterLabelIndx]
+    
+    % so fill segImLUV image in the area of this cluster with its mean color
+    [y, x] = ind2sub(size(labels), clusterLabelIndx);
+    nPx = numel(y);
+    for iPx=1:nPx
+        segImLUV(y(iPx), x(iPx), :) = single(clusterColor(1,:));
+    end
+end % for every iSegm cluster 
+
+% % for every segment that has a close-enaugh compenion
+% % allNonZeroColumn = find( diag(mDist) );
+% siz = size(mDist,2);
+% dia = diag(mDist);
+% for jSegm = 1:siz
+%     if(dia(jSegm)==0), continue; end;
+% %   we are in column of a segment(jSegm) which has a companion segment
+% %     for iSegm = jSegm+1:iSegm_max
+%     % for every non zero
+%     allNonZeroIndex = find( mDist(:,jSegm) );
+%     
+%     [y, x] = ind2sub(size(mDist), allNonZeroIndex);
+%     for i=1:size(y,2)
+%         mDist(y(i), x(i)) = jSegm;
+%     end
+%     mDist
+% %     end
+%     nSegm = 1;
+%     
+%     col_mean = col_mean + col(iSegm);
+%     col_mean = col_mean / nSegm ;
+% end
 
 
 
+
+% indxFree = iSegm_max+1;
+
+% 
+%                 % reindex jSegm in labels to iSegm 
+%                 labels(labels==jSegm)=iSegm;    
+%                 
+%                 % calculate the mean color of these two segments
+%                 for i=1:3
+%                     col_mean(i) = mean( [col(iSegm,i), col(jSegm,i)] );
+%                 end
+%                 
+%                 % give both segments(i,j) mean color in image
+%                 xlabels = labels; 
+%                 xlabels(xlabels~=iSegm) = 0;
+%                 allNonZeroIndex = find(xlabels);
+%                 [y, x] = ind2sub(size(xlabels),allNonZeroIndex);
+% %                 segImLUV( y, x, :) = col_mean(:);
+%                 segImLUV( y, x, :) = mean( [col(iSegm,:), col(jSegm,:)] );
+
+                
+                
+                
+% meanshift end color - the color to which segment iterated to
+%     firstNonZeroIndex = allNonZeroIndex(1); % find(xlabels, 1, 'first'); 
+
+
+% permute
+% fusedSegIndx = segImLUV;
+
+
+end %fcn
+
+
+% ____________________________________________________
 % TODLE nE = vícekrát provést kmeans -> pro rùzné hodnoty nColors a ponechat tu
 % která má nejmenší sumd (kdy pro každý výpoèet je kmeans(repetitive) >= 3
 

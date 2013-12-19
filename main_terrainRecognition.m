@@ -2,7 +2,8 @@
 % Segmentace satelitních map
 % Pùlsemestrální projekt è.2
 
-function main_terrainRecognition(speedUp)
+% function main_terrainRecognition(speedUp)
+function main_terrainRecognition()
 
 %% Zadání:
 % -	Úkolem studentù je se z pøedložených satelitních snímkù vysegmetovat jednotlivé druhy terénù. 
@@ -48,10 +49,16 @@ imMax = imread(imPath);
 
 [pathstr,name,ext] = fileparts(imPath);
 
-% speedUp = 2;
+
+
+
+% try speedUp execution times for different resolutions
+speedUp = 2;
 disp(num2str(speedUp));
 % for sc=logspace( -1, 0, 7);
-for sc=linspace( 0.1, 0.3, 4);
+% for sc=linspace( 0.2, 0.3, 4);
+for sc = 0.2
+    FI = FI+1;
     im_scaled = imresize( imMax, sc );
     im_path = [pathstr,'\',name,'_',num2str(sc*100),'_',num2str(speedUp),ext]
     imwrite(im_scaled,im_path);

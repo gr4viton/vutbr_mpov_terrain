@@ -3,7 +3,7 @@ function [ prepIm ] = PRE_processImage( im, doFigures )
 %   ...
 
 %% "empirical" parameters to filter
-rng_min = 1; sgm_min = 1.5;
+rng_min = 2; sgm_min = 1.5;
 rng_max = 4; sgm_max = 2;
 
 
@@ -15,7 +15,7 @@ if( allPx >= 10^6 )
     sgm = sgm_max;
 else
 % for smaller images use interpolation between [rng_max, sgm_max] and [rng_min, sgm_min]
-    rng = rng_min +  (rng_max-rng_min) * (allPx/10^6)^1; %
+    rng = rng_min + (rng_max-rng_min) * (allPx/10^6)^1; %
     sgm = sgm_min + (sgm_max-sgm_min) * (allPx/10^6)^1; % quadratic
 end
 

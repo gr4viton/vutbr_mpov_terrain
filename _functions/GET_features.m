@@ -1,26 +1,18 @@
 function [ ftrList ] = GET_features( imOrig, segIm, labels, modes, regsize, grad, conf )
 %GET_FEATURES gets feature-lists for individual segments
-%   ...
+%   ... delete some unused parameters
 
-%% anonymous functions for index parameters
-% featureList([ index ]) - get index of segment from labels(y,x)
-fi = @(y,x) labels(y,x)+1;
+tic;
+disp('  * Calculating feature list for individual segments');
 
+%% initializations
 iSegm_max =  max(labels(:));
-% iSegm_sum = iSegm_max - 1;
-
 disp(['    - Number of segments = ', num2str(iSegm_max+1)]);
 
 % predefining the size of featureList
 ftrList(iSegm_max).segmIndx = iSegm_max;
 
-% [ featureList(index) ] - get featureList that corresponds to labels(y,x)
-% fL = @(y,x) featureList(fi(y,x));
-% fL = @(y,x) ftrList(uint16(labels(y,x)+1));
-% not functional [pointer to the array of struct] ?
-
 imageArea = size(segIm,1)*size(segIm,2);
-    
         
 %% first loop through - for inicializing zero values and count the one-loop countable features
 for iSegm = 1:iSegm_max
@@ -37,24 +29,29 @@ for iSegm = 1:iSegm_max
     ftrList(iSegm).endRed = 0;
     ftrList(iSegm).endGreen = 0;
     ftrList(iSegm).endBlue = 0;
-% median modus mean from original image segments RGB color
+% mean & std of this segment with original colors 
     ftrList(iSegm).meanRed = 0;
     ftrList(iSegm).meanGreen = 0;
     ftrList(iSegm).meanBlue = 0;
-        ftrList(iSegm).modusRed = 0;
-        ftrList(iSegm).modusGreen = 0;
-        ftrList(iSegm).modusBlue = 0;
-    ftrList(iSegm).medianRed = 0;
-    ftrList(iSegm).medianGreen = 0;
-    ftrList(iSegm).medianBlue = 0;
+        ftrList(iSegm).stdRed = 0;
+        ftrList(iSegm).stdGreen = 0;
+        ftrList(iSegm).stdBlue = 0;
+% modus & median of this segment with original colors 
+    ftrList(iSegm).modusRed = 0;
+    ftrList(iSegm).modusGreen = 0;
+    ftrList(iSegm).modusBlue = 0;
+        ftrList(iSegm).medianRed = 0;
+        ftrList(iSegm).medianGreen = 0;
+        ftrList(iSegm).medianBlue = 0;
 
     
 %     ftrList(i).circumfrnc = 0; % sum of circumferences of individual areas of a segment
 
 % ____________________________________________________
 % computation
+    % get individual segments of index iSegm
     xlabels = labels; 
-    xlabels(xlabels~=iSegm) = 0; % get individual segment of index i 
+    xlabels(xlabels~=iSegm) = 0;
     xlabels = xlabels ./ iSegm; % [one] - segment | [zero] - not segment
     
     allNonZeroIndex = find(xlabels);
@@ -75,11 +72,19 @@ for iSegm = 1:iSegm_max
     segmR = imOrig_segment(:,:,1);
     segmG = imOrig_segment(:,:,2);
     segmB = imOrig_segment(:,:,3);
+    
+    d_segmR = double(segmR);
+    d_segmG = double(segmG);
+    d_segmB = double(segmB);
 %     imshow(imOrig_segment,[]);
 % mean segment color from masked original
     ftrList(iSegm).meanRed      = mean(segmR(logical(mask)));
     ftrList(iSegm).meanGreen    = mean(segmG(logical(mask)));
     ftrList(iSegm).meanBlue     = mean(segmB(logical(mask)));
+% standard deviation of segment color from masked original
+    ftrList(iSegm).stdRed      = std(d_segmR(logical(mask)));
+    ftrList(iSegm).stdGreen    = std(d_segmG(logical(mask)));
+    ftrList(iSegm).stdBlue     = std(d_segmB(logical(mask)));
 % modus segment color from masked original    
     ftrList(iSegm).modusRed     = mode(segmR(logical(mask)));
     ftrList(iSegm).modusGreen	= mode(segmG(logical(mask)));
@@ -129,20 +134,8 @@ end
 % display feature list fields = individual feature names
 % disp(ftrList);
 
+disp(['    - Done in ',num2str(toc),'s']);
+
 end %function
 
 
-
-%% euler number testing
-% figure(51);
-% SI = 0;
-% SX=4;SY=3;
-% for i = 1:fi_max
-%     xlabels = labels;
-%     xlabels(xlabels~=i) = 0;
-%     eul1 = bweuler( uint16(xlabels) ,8);
-%     im = uint16(xlabels);
-%         SI=SI+1; subplot(SY,SX,SI);
-%         imshow(im,[]); 
-%         title(strcat('i[',num2str(i),'] eul = ',num2str(eul1),'')); axis tight
-% end
