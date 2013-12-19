@@ -22,8 +22,8 @@ statsPrefix = 'stats_';
 statsExtension = '.csv';
 
 % delimiters
-delimVal = ';\t'; % delimiter of values
-% delimVal = '; '; % delimiter of values 
+% delimVal = ';\t'; % delimiter of values
+delimVal = '; '; % delimiter of values 
 % delimHead = ';\t'; % delimiter of headtitles
 delimHead = '; '; % delimiter of headtitles
 
@@ -51,7 +51,7 @@ segm_sum = size(values, 3);
 %% write stats to string
 width = size(imOrig,2);
 height = size(imOrig,1);
-firstLine = ['Feature list for individual segments of image: "',imFileName,...
+firstLine = ['Feature list for individual segments of mean-shifted image: "',imFileName,imExt,...
     '" - resolution [',num2str(width),'×',num2str(height),']; nSegments=',...
     num2str(segm_sum),'; delimiter = "',delimVal,'"'];
 str = sprintf('%s', [firstLine, newLine]);

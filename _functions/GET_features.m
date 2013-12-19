@@ -43,16 +43,22 @@ for iSegm = 1:iSegm_max
         ftrList(iSegm).medianRed = 0;
         ftrList(iSegm).medianGreen = 0;
         ftrList(iSegm).medianBlue = 0;
-
+% bounding box features of this cluster        
+    ftrList(iSegm).BBwidth = 0; % boundingBox width
+    ftrList(iSegm).BBheight = 0; % boundingBox height
+    ftrList(iSegm).kurtosis2 = 0; % kurtosis (šikmost)
+    ftrList(iSegm).skewness2 = 0; % skewness (špièatost)
+    ftrList(iSegm).moment2 = 0; % centrální moment druhého øádu
+    ftrList(iSegm).moment3 = 0; % centrální moment tøetího øádu
     
 %     ftrList(i).circumfrnc = 0; % sum of circumferences of individual areas of a segment
 
 % ____________________________________________________
 % computation
     % get individual segments of index iSegm
-%     xlabels = labels; 
-%     xlabels(xlabels~=iSegm) = 0;
-%     xlabels = xlabels ./ iSegm; % [one] - segment | [zero] - not segment
+    xlabels = labels; 
+    xlabels(xlabels~=iSegm) = 0;
+    xlabels = xlabels ./ iSegm; % [one] - segment | [zero] - not segment
 %     
     allNonZeroIndex = find(labels==iSegm);
     if( numel(allNonZeroIndex) == 0)
@@ -67,8 +73,11 @@ for iSegm = 1:iSegm_max
     ftrList(iSegm).endBlue     = segIm( y, x, 3) ;
     
 % segment of original image    
-    mask = labels;
-    mask3 = uint8(cat(3,labels,labels,labels));
+%     mask_struct = regionprops(xlabels,'Image');
+%     mask = mask_struct.Image;
+%     mask = xlabels.Image;
+    mask = xlabels;
+    mask3 = uint8(cat(3,mask,mask,mask));
     imOrig_segment = imOrig .* mask3; % masking of original
     % RGB of masked original
     segmR = imOrig_segment(:,:,1);
@@ -100,9 +109,26 @@ for iSegm = 1:iSegm_max
     ftrList(iSegm).areaSumAbs = regsize(iSegm); %sum(xlabels(:));
     ftrList(iSegm).areaSumRelIm =  ftrList(iSegm).areaSumAbs * 100.0 / imageArea;
     ftrList(iSegm).eulerNum8 = bweuler( uint16(labels) ,8);
+    
+%% not sure if these are exactly declarative
 
+% get bounding box of this cluster
+    xlabels_regprops = regionprops(xlabels,'Image');
+    bbox = xlabels_regprops.Image;
+    ftrList(iSegm).BBwidth = size(bbox,2);
+    ftrList(iSegm).BBheight = size(bbox,1);
+% kurtosis
+    ftrList(iSegm).kurtosis2 = kurtosis(kurtosis(bbox));
+% skewness
+    ftrList(iSegm).skewness2 = skewness(skewness(bbox));
+% 2 a 3 moment
+    ftrList(iSegm).moment2 = moment(moment(bbox,2),2);
+    ftrList(iSegm).moment3 = moment(moment(bbox,3),3);
+    
+    
     %% chce ještì!!
-%     h-momenty šikmost ostrost a rozptyl barev
+%     
+% dodìláno: rozptyl barev h-momenty šikmost ostrost 
 % ____________________________________________________
 
 % others

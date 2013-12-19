@@ -41,14 +41,14 @@ imMax = imread(imPath);
 
 
 %% just segm with defaults
-% disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
-% disp('map2segmentation - defaults');
-% sc = 0.1;
-%     FI = FI+1;
-%     im_scaled = imresize( imMax, sc );
-%     im_path = [pathstr,'\',name,'_',num2str(sc*100),ext]
-%     imwrite(im_scaled,im_path);
-%     map2segments_defArgs(im_path);
+disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+disp('map2segmentation - defaults');
+sc = 0.1;
+    FI = FI+1;
+    im_scaled = imresize( imMax, sc );
+    im_path = [pathstr,'\',name,'_',num2str(sc*100),ext]
+    imwrite(im_scaled,im_path);
+    map2segments_defArgs(im_path);
 
 %% try different tresholds
 % disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
@@ -68,19 +68,19 @@ imMax = imread(imPath);
 
 
 %% try different scales - NICE :)
-disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
-disp('trying different scales');
-speedUp = 2;
-lumTreshold = -1; colTreshold = -1; 
-% for sc=logspace( -1, 0, 7);
-for sc=linspace( 0.1, 0.3, 4);
-    FI = FI+1;
-    im_scaled = imresize( imMax, sc );
-    im_path = [pathstr,'\',name,'_',num2str(sc*100),'_',...
-        num2str(lumTreshold),num2str(colTreshold),ext]
-    imwrite(im_scaled,im_path);
-    map2segments(im_path, 1,1,1,1, speedUp, [lumTreshold, colTreshold] );
-end
+% disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+% disp('trying different scales');
+% speedUp = 2;
+% lumTreshold = -1; colTreshold = -1; 
+% % for sc=logspace( -1, 0, 7);
+% for sc=linspace( 0.1, 0.3, 4);
+%     FI = FI+1;
+%     im_scaled = imresize( imMax, sc );
+%     im_path = [pathstr,'\',name,'_',num2str(sc*100),'_',...
+%         num2str(lumTreshold),num2str(colTreshold),ext]
+%     imwrite(im_scaled,im_path);
+%     map2segments(im_path, 1,1,1,1, speedUp, [lumTreshold, colTreshold] );
+% end
 
     
 %% end

@@ -28,7 +28,6 @@ function [ segIm, indxIm ] = ...
 % [speedUp] - to give to edison_wrapper of meanshift function
 %           -1 -> to use default
 %           [1:3] -> default 2
-%           
 % [tresholds] - array of two shrinking parameters [lum, col] viz. SHRINK_segmentCount
 %           [-1,-1] -> to use defaults
 %           [0:20] -> typical lum 
