@@ -84,52 +84,59 @@ dia = diag(mDist);
 % so every segment (i) will be re-labeled to index dia(i)
 % with a mean color of all of them
 
-% if alreadyReindexed(i) == 
+% if newIndexes(i) == 
 % 0 -> this iSegm was not reindexed yet
-% 1 -> this iSegm cluster segments were already reindexed 
-% 2 -> this iSegm is not part of a cluster and was reindexed
-alreadyReindexed = zeros(nSegm,1);
+% x -> in newIndexes there is new index of iSegm
+newIndexes = zeros(nSegm,1);
 
 
 disp('  * Get mean colros for individual segment clusters');
 % get mean color for each segment cluster & fill segmIm
-freeIndx = 1;
+freeIndex = 1;
 xLabels = zeros(sizeLab);
 for iSegm=1:nSegm
-    if(alreadyReindexed(iSegm) ~= 0)
-        % these iSegm cluster segments were already reindexed
-        continue;
-    end
-    clusterIndexes = find(dia==iSegm); % get indexes of this iSegm cluster
-    nCluster = numel(clusterIndexes); % number of segments in this cluster
-%% this iSegm segment has no companion = not a part of any cluster        
-    if(nCluster == 0) 
+%% this iSegm segment has no companion = not a part of any cluster     
+    if(dia(iSegm) == 0) 
+        newIndexes(iSegm) = freeIndex;
+        % just reindex this segment
         disp(['    - Segment[',num2str(iSegm),'/',num2str(nSegm),...
-            '] is not clustered; newIndx=',num2str(freeIndx),''])
+            '] is not clustered; newIndx=',num2str(freeIndex),''])
         
         % write the new index value to the old coordinates of a segment
+%         xLabels(iLabels==iSegm) = freeIndex; %not functional
         [y, x] = ind2sub(sizeLab, find(iLabels==iSegm));
         nPx = numel(y);
         for iPx=1:nPx
-            xLabels(y(iPx), x(iPx),1) = freeIndx;
+            xLabels(y(iPx), x(iPx),1) = freeIndex;
         end
+        % do not change the segmented image 
 figure(1)
-    tit=['freeIndx=',num2str(freeIndx),'']
+    tit=['freeIndx=',num2str(freeIndex),''];
     imshow(uint16(xLabels),[]); title(tit);
-        freeIndx=freeIndx+1;
-        alreadyReindexed(iSegm) = 2;
-        % do not change the segmented image
-        if(nPx > 1)
+        freeIndex=freeIndex+1;
+        newIndexes(iSegm) = 2;
+        if(nPx < 1)
             % this can not happen -> iSegm has no values in ilabels
-            disp(['Indexing error - segment',num2str(iSegm),' has no pixels']);
+            disp(['Indexing error - segment[',num2str(iSegm),'] has no pixels']);
         end
         continue;
     end
 %% this segment has its companions = is part of a cluster
+%     dia(iSegm)
+    if(newIndexes(dia(iSegm)) ~= 0)
+        % these iSegm cluster segments were already reindexed
+        continue;
+    end
     % mark that we will reindex this iSegm cluster segments -> for not doing it multiple times
-    alreadyReindexed(iSegm) = 1;
+    newIndexes(dia(iSegm)) = freeIndex;
+
+    clusterIndexes = find(dia==dia(iSegm)); % get indexes of this iSegm cluster
+    nCluster = numel(clusterIndexes); % number of segments in this cluster
+    
     disp(['    - Segment[',num2str(iSegm),'/',num2str(nSegm),...
-        '] is in cluster; newIndx=',num2str(freeIndx),''])
+        '] newIndx=[',num2str(freeIndex),...
+        '] is in cluster with ',num2str(nCluster),' other segments']);
+        %[',num2str(dia(iSegm)),']; '])
     % add individual colors
     clusterColor = zeros(1,3);
     for i=1:nCluster
@@ -154,19 +161,22 @@ figure(1)
     a = cat(3,b,b,b);
     for iPx=1:nPx
         segImLUV(y(iPx), x(iPx), :) = single(clusterColor(1,:));
-        a(y(iPx), x(iPx), :) = single(clusterColor(1,:));
-        xLabels(y(iPx), x(iPx)) = freeIndx;
+%         a(y(iPx), x(iPx), :) = single(clusterColor(1,:));
+        xLabels(y(iPx), x(iPx)) = newIndexes(dia(iSegm));
 % show "pixel painting" of flooded clusters
-figure(1);imshow(uint16(xLabels),[]); 
+% figure(1);imshow(uint16(xLabels),[]); 
     end
+    freeIndex = freeIndex+1;
 %     imshow(Luv2RGB(a),[]); title(tit);
 figure(1);
-    tit=['freeIndx=',num2str(freeIndx),'']
+    tit=['CLUST freeIndx=',num2str(freeIndex),''];
     imshow(uint16(xLabels),[]); title(tit);
-    freeIndx=freeIndx+1;
+%     freeIndx=freeIndx+1;
 end % for every iSegm cluster 
 
-alreadyReindexed'
+% in newIndexes there are new indexes 
+% newindex of iSegm = newIndexes(iSegm)
+newIndexes'
 
 %% output
 fusedSegImLUV = segImLUV;
