@@ -26,8 +26,13 @@ function [ segIm, indxIm ] = ...
 % [doFigures] - whether to imshow images through the process
 %           if doFigures == 1 - show
 % [speedUp] - to give to edison_wrapper of meanshift function
-%           [1-3] -> default 2
+%           -1 -> to use default
+%           [1:3] -> default 2
+%           
 % [tresholds] - array of two shrinking parameters [lum, col] viz. SHRINK_segmentCount
+%           [-1,-1] -> to use defaults
+%           [0:20] -> typical lum 
+%           [0:5] -> typical col
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %@return
 % [segIm] - segmented image (RGB)
@@ -65,6 +70,8 @@ if nargin < 1
     if(narign <= argMax-5)
         writeSegmentedPath = defarg(argMax-5); end;
 end
+if(speedUp <0) speedUp = defarg(5);
+    
 [pathstr,name,ext] = fileparts(imPath);
 disp( strcat('  * Image-name "', ' ', name, ext, '", in "', pathstr,'"') );
 

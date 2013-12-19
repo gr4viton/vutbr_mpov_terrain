@@ -61,17 +61,15 @@ disp(num2str(speedUp));
 % for sc = 0.2
 % sc = 0.2;
 sc = 0.1;
-lumTreshold = 5;
-for colTreshold=linspace(3,20,5)
-% for colTreshold = 3
+
+lumTreshold = -1; % typical - [0 -> 20]
+colTreshold = -1; 
     FI = FI+1;
     im_scaled = imresize( imMax, sc );
-    im_path = [pathstr,'\',name,'_',num2str(sc*100),'_',...
-        num2str(lumTreshold),num2str(colTreshold),ext]
+    im_path = [pathstr,'\',name,'_',num2str(sc*100),ext]
     imwrite(im_scaled,im_path);
-    map2segments(im_path, 1,1,1,1, speedUp, [lumTreshold, colTreshold] );
-end
-
+%     map2segments(im_path, 1,1,1,1, speedUp, [lumTreshold, colTreshold] );
+    map2segments_defArgs(im_path);
 
 disp('main_terrainRecognition ended');
 

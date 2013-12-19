@@ -17,11 +17,13 @@ plotIndividualClusters = 0;
 
 % treshold distance - could get it from mean/median/modus of distances
 % but implicite value is good enaugh
+lumTreshold = treshold(1);
+colTreshold = treshold(2);
 if(treshold(1) < 0)
-    lumTreshold = 5;
+    lumTreshold = 13; % default
 end
 if(treshold(2) < 0)
-    colTreshold = 5;
+    colTreshold = 1.14; % default
 end
 if(treshold(1) == 0 && treshold(2) == 0)
 % do not shrink
@@ -32,12 +34,10 @@ if(treshold(1) == 0 && treshold(2) == 0)
     shrinkedSegmentCount = 0;
     return;
 end    
-lumTreshold = treshold(1);
-colTreshold = treshold(2);
 %% do shrink
 disp(['  * ',num2str(iShrink),' iteration of shrink (stops when indempotent)']);
 disp(['  * Starting to fuse close segments with tresholds[',...
-    num2str(treshold(1)),',',num2str(treshold(1)),']=[light,color]']);
+    num2str(lumTreshold),',',num2str(colTreshold),']=[light,color]']);
 tstart = tic;
 
 % min index
@@ -74,7 +74,7 @@ col2Treshold = colTreshold^2;
 disp('  * Get LUV colors of individual segments');
 % DRAW_image(uint8(iLabels),'iLabels');
 
-% get color of all segments in LUV space and write close segments to diagonal
+%% get color of all segments in LUV space and write close segments to diagonal
 for iSegm=1:nSegm
     % get color of this segment in LUV space 
     firstNonZeroIndex = find(iLabels==iSegm,1);
@@ -115,22 +115,26 @@ for iSegm=1:nSegm
     end %for jSegm
 end %for iSegm
 
+
+%% next operations
+
 dia = diag(mDist);
 % dia(i) = companion-segment index - first-cluster-segment index
 % so every segment (i) will be re-labeled to index dia(i)
 % with a mean color of all of them
 
-% if newIndexes(i) == 
+newIndexes = zeros(nSegm,1);
+% newIndexes(iSegm) ==
 % 0 -> this iSegm was not reindexed yet
 % x -> in newIndexes there is new index of iSegm
-newIndexes = zeros(nSegm,1);
 
 
 disp('  * Reindex and get mean colros for individual segment clusters');
-% get mean color for each segment cluster & fill segmIm
+%% get mean color for each segment cluster & fill segmIm
 freeIndex0 = 0;
 freeIndex = freeIndex0;
 xLabels = zeros(sizeLab);
+
 for iSegm=1:nSegm
 %% this iSegm segment has no companion = not a part of any cluster     
     if(dia(iSegm) == 0) 
@@ -232,7 +236,7 @@ disp(['  * Total fused segments = ',num2str(shrinkedSegmentCount),'']);
 if(doFigures == 1)
     disp('  * Show shrinked segmented image');
   tit = ['[',num2str(lumTreshold),';',num2str(colTreshold),...
-        ']=[lum;col]treshold'];
+        ']=[lum;col]treshold; nSegm=',num2str(nSegm),''];
     DRAW_image(fusedSegImRGB, ['Shrinked ',tit]);
     disp('  * Show shrinked indexed image');
     tit = [num2str(size(xLabels,1)),'×',num2str(size(xLabels,2)),...
