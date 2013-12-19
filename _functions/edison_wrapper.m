@@ -171,7 +171,7 @@ if ~isfield(p,'EdgeStrengthThreshold')
 end
 if p.EdgeStrengthThreshold < 0 || p.EdgeStrengthThreshold > 1
     error('edison_wrapper:parse_inputs','MixtureParameter must be between zero and one');
-end
+end %fcn
 
 % % Currently unsupported
 % Edge Detection Parameters

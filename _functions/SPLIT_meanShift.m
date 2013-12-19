@@ -100,20 +100,3 @@ end
 
 
 end %fcn
-
-
-
-%% DEFAULT parameters
-% % count from image resolution etc
-% spatialBandWidth = 100;
-% rangeBandWidth = 5;
-% minimumRegionArea = 50;
-% % margin = max(size(im_orig)) * 0.01;
-% 
-% %% calculate Mean Shift
-% [fimg, labels, modes, regsize, grad, conf] = edison_wrapper(...
-%     im, @RGB2Luv,...
-%     'SpatialBandWidth',     spatialBandWidth,...
-%     'RangeBandWidth',       rangeBandWidth,...
-%     'MinimumRegionArea',    minimumRegionArea ...
-%     );

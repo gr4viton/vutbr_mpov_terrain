@@ -86,27 +86,4 @@ end
 %% end
 disp('main_terrainRecognition ended');
 
-end
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% napady 
-%% louka a les - stejna strukutra ale ruzna barva - potom co rozsegmetuju na 
-%% matematická morfologie - hit & miss
-%% lokalni spektralni histogram
-%% korelace - korelaèní matice
-% kookurentní matice co-occurence - statistika z odezvy na korelaci 
-% fourierka - frekvencni
-% wavelety
-% vyøezi z fourierky
-
-% zkladni pøiznaky pro jednotlive oblasti - šikmost etc ->
-% fraktal
-
-% image processing analysis and machine vision
-% somka
-% 17ta kapitola
-
-%% K-means
-
-% meanshift
-% rgb2gray
+end %fcn

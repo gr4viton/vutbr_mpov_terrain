@@ -25,5 +25,4 @@ subplot2 = @(m,n,p) subtightplot (m, n, p, [0.05 0.01], [0.02 0.05], [0.01 0.01]
 %% draw
     SI=SI+1; subplot2(SY,SX,SI);
     imshow(im,[]); title(title_str); axis tight
-end
-
+end %fcn

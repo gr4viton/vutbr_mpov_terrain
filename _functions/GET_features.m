@@ -176,6 +176,4 @@ end
 
 disp(['    - Done in ',num2str(toc),'s']);
 
-end %function
-
-
+end %fcn

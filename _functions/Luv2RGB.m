@@ -41,3 +41,5 @@ zr = find(l < .1);
 im_rgb([zr zr+prod(imsiz(1:2)) zr+2*prod(imsiz(1:2))]) = 0;
 im_rgb = min(im_rgb,1);
 im_rgb = max(im_rgb,0);
+
+end %fcn

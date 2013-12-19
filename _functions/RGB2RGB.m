@@ -19,4 +19,4 @@ if (max_im > 1)
 end
 
 im_rgbFloat =im_rgbNotFloat;
-
+end %fcn

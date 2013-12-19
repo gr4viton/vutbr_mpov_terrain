@@ -9,5 +9,4 @@ function [ segIm, indxIm ]  = map2segments_defArgs( imPath )
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [ segIm, indxIm ] = map2segments(imPath,1,1,1,1,-1,[-1,-1]);
 
-end
-
+end %fcn

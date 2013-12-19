@@ -248,5 +248,3 @@ if(doFigures == 1)
 end
 
 end %fcn
-
-
