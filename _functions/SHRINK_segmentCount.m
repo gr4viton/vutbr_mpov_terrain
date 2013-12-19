@@ -1,6 +1,7 @@
 function [fusedSegImLUV,fusedSegImRGB,fusedSegImIndx, shrinkedSegmentCount] = ...
     SHRINK_numOfSegments(labels, segImLUV, doFigures, treshold, iShrink)
 %SHRINK_numOfSegments Shrink feature-close segments togeather
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %@brief     this function shirnks the number of segments
 %           as the parameters of different segmented areas are alike
 %           reindex some of groups with common color parameters to same index 
@@ -8,6 +9,7 @@ function [fusedSegImLUV,fusedSegImRGB,fusedSegImIndx, shrinkedSegmentCount] = ..
 %           (optional?) -do not need image of segments or only segments colors?
 %           [im_indx_RGB] matrix with RGB color
 %@return    [fusedSegIm] image with lesser count of indexed segments
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % plotting
 global FI;

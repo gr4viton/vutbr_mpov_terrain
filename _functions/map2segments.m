@@ -3,9 +3,6 @@ function [ segIm, indxIm ] = ...
     writeSegmentedPath, writeIndexedPath, writeStatsPath, doFigures, ...
     speedUp, tresholds)
 %MAP2SEGMENTS segmentation of map-alike image based on mean-shift method
-% 
-% * The displayed time of mean-shift function execution are only
-% empirical constants of execution on Intel Core i5 2.3GHz win7 computer
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %@param[in]
 % [imPath] - a path to the segmented to-be image file 
@@ -32,11 +29,13 @@ function [ segIm, indxIm ] = ...
 %           [-1,-1] -> to use defaults
 %           [0:20] -> typical lum 
 %           [0:5] -> typical col
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %@return
 % [segIm] - segmented image (RGB)
 % [indxIm] - indexed image (0-numOfSegments)
-% 
+% @etc
+% * The displayed time of mean-shift function execution are only
+% empirical constants of execution on Intel Core i5 2.3GHz win7 computer
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %@function      map2segments

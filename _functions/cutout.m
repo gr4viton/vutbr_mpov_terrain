@@ -1,11 +1,11 @@
+function window = cutout(data, pos, hr, hs, d)
 % WINDOW = CUTOUT(DATA, POS, HR, HS, D);
-%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% @brief
 %   Function returns all elements of M x N x Dim1 x .. x DimD matrix
 %   DATA, that lie inside elipsoid with radius HR, HR, HS, .. , HS with
 %   center POS.
-%
-function window = cutout(data, pos, hr, hs, d)
-
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if nargin<5
    d = size(data,3);
 end;

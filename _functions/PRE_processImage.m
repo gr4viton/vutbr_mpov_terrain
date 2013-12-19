@@ -1,6 +1,12 @@
 function [ prepIm ] = PRE_processImage( im, doFigures )
 %PRE_PROCEESSIMAGE apply Gaussian filter with parameters derived from resolution
-%   ...
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% @param[in]  
+%   [im] | image to preprocess
+%   [doFigures] | whether to plot images
+% @return
+%   prepIm | preprocessed image
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% "empirical" parameters to filter
 rng_min = 2; sgm_min = 1.5;

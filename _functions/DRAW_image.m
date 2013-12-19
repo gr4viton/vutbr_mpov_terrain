@@ -1,8 +1,10 @@
 function [] = DRAW_image( im, title_str )
 %DRAW_IMAGE Summary of this function goes here
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % @param[in]  im | image to subplot imshow
 % @param[in]  title_str | title to show
 % optional global parameters global SX; global SY; global SI;
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 global SX; global SY; global SI;
 if SX <= 0

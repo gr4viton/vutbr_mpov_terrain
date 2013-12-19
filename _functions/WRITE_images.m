@@ -1,8 +1,16 @@
 function [ ] = WRITE_images( ...
 segIm, indxIm, writeSegmentedPath, writeIndexedPath, imPath )
 %WRITE_IMAGES if paths are specified and not zero write segmented and indexed image
-%   ...
-
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%@param[in]
+%  [ftrList] - array of feature-lists of individual segments
+%  [imOrig] - original image
+%  [imPath] - path to original image
+%  [writeStatsPath] - variable for determining if and where to write stats
+%           if writeStatsPath == 0 - do not write
+%           elseif writeIndexedPath == 1 - create the file in directory "_stat" created in the imPath      
+%           else write to path specified
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 segmImDirName = '\_segm\';
 [imPathStr,imFileName,imExt] = fileparts(imPath);
 

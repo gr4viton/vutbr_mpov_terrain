@@ -1,6 +1,15 @@
 function [] = WRITE_statistics( ftrList, imOrig, imPath, writeStatsPath )
 %WRITE_STATISTICS writes segments feature-lists into stats-file
-%   ...
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%@param[in]
+%  [ftrList] - array of feature-lists of individual segments
+%  [imOrig] - original image
+%  [imPath] - path to original image
+%  [writeStatsPath] - variable for determining if and where to write stats
+%           if writeStatsPath == 0 - do not write
+%           elseif writeIndexedPath == 1 - create the file in directory "_stat" created in the imPath      
+%           else write to path specified
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if writeStatsPath==0
     return;

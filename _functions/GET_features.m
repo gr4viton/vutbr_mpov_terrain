@@ -1,6 +1,18 @@
 function [ ftrList ] = GET_features( imOrig, segIm, labels, modes, regsize, grad, conf )
 %GET_FEATURES gets feature-lists for individual segments
-%   ... delete some unused parameters
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%@param[in]
+%  [imOrig] - original image
+%  [segIm] - segmented image
+%  [labels] - indexed image
+%  [regsize] - number of pixels in individual segments
+%  [imPath] - path to original image
+%@return
+%  [ftrList] - array of feature-lists of individual segments
+% @unused
+% - some of mean-shift edison_wrapper input parameters:
+%   modes, grad, conf
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 tic;
 disp('  * Calculating feature list for individual segments');

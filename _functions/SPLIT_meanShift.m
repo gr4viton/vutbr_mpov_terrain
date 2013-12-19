@@ -1,6 +1,23 @@
 function [segImRGB, segImLUV, indxIm, ...
     labels, modes, regsize, grad, conf] ...
     = SPLIT_meanShift(im, speedUp, doFigures)
+%SPLIT_MEANSHIFT gets individual segments through mean-shift method using edison_wrapper
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%@param[in]
+%  [im] - preprocessed image
+%  [speedUp] - speed optimalization edison-wrapper parameterf 
+%  [doFigures] - whether to plot images
+%@return
+%  [segImRGB] - segmented image in RGB color-space
+%  [segImLUV] - segmented image in Luv color-space
+%  [indxIm] - uint8 / uint16 indexed image 
+%  [labels] - indexed image
+%  [regsize] - number of pixels in individual segments
+% @unused-returns
+% - some of mean-shift edison_wrapper return parameters:
+%   modes, grad, conf
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %% resolution ~ execution time message
 numCol = '';
