@@ -49,9 +49,9 @@ for iSegm = 1:iSegm_max
         ftrList(iSegm).stdGreen = 0;
         ftrList(iSegm).stdBlue = 0;
 % modus & median of this segment with original colors 
-    ftrList(iSegm).modusRed = 0;
-    ftrList(iSegm).modusGreen = 0;
-    ftrList(iSegm).modusBlue = 0;
+%     ftrList(iSegm).modusRed = 0;
+%     ftrList(iSegm).modusGreen = 0;
+%     ftrList(iSegm).modusBlue = 0;
         ftrList(iSegm).medianRed = 0;
         ftrList(iSegm).medianGreen = 0;
         ftrList(iSegm).medianBlue = 0;
@@ -109,9 +109,9 @@ for iSegm = 1:iSegm_max
     ftrList(iSegm).stdGreen    = std(d_segmG(logical(mask)));
     ftrList(iSegm).stdBlue     = std(d_segmB(logical(mask)));
 % modus segment color from masked original    
-    ftrList(iSegm).modusRed     = mode(segmR(logical(mask)));
-    ftrList(iSegm).modusGreen	= mode(segmG(logical(mask)));
-    ftrList(iSegm).modusBlue    = mode(segmB(logical(mask)));
+%     ftrList(iSegm).modusRed     = mode(segmR(logical(mask)));
+%     ftrList(iSegm).modusGreen	= mode(segmG(logical(mask)));
+%     ftrList(iSegm).modusBlue    = mode(segmB(logical(mask)));
 % median segment color from masked original
     ftrList(iSegm).medianRed    = median(segmR(logical(mask)));
     ftrList(iSegm).medianGreen  = median(segmG(logical(mask)));
