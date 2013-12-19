@@ -50,23 +50,26 @@ for iSegm = 1:iSegm_max
 % ____________________________________________________
 % computation
     % get individual segments of index iSegm
-    xlabels = labels; 
-    xlabels(xlabels~=iSegm) = 0;
-    xlabels = xlabels ./ iSegm; % [one] - segment | [zero] - not segment
-    
-    allNonZeroIndex = find(xlabels);
+%     xlabels = labels; 
+%     xlabels(xlabels~=iSegm) = 0;
+%     xlabels = xlabels ./ iSegm; % [one] - segment | [zero] - not segment
+%     
+    allNonZeroIndex = find(labels==iSegm);
 %     allZeroIndex = find(xlabels==0);
-    
+    if( numel(allNonZeroIndex) == 0)
+        disp(['Indexation error - segment[',num2str(iSegm),'] index number has no pixels attached!']);
+        break;
+    end
 % meanshift end color - the color to which segment iterated to
     firstNonZeroIndex = allNonZeroIndex(1); % find(xlabels, 1, 'first');
-    [y, x] = ind2sub(size(xlabels),firstNonZeroIndex);
+    [y, x] = ind2sub(size(labels),firstNonZeroIndex);
     ftrList(iSegm).endRed      = segIm( y, x, 1) ;
     ftrList(iSegm).endGreen    = segIm( y, x, 2) ;
     ftrList(iSegm).endBlue     = segIm( y, x, 3) ;
     
 % segment of original image    
-    mask = xlabels;
-    mask3 = uint8(cat(3,xlabels,xlabels,xlabels));
+    mask = labels;
+    mask3 = uint8(cat(3,labels,labels,labels));
     imOrig_segment = imOrig .* mask3; % masking of original
     % RGB of masked original
     segmR = imOrig_segment(:,:,1);
@@ -97,7 +100,7 @@ for iSegm = 1:iSegm_max
 % absolute and relative areas
     ftrList(iSegm).areaSumAbs = regsize(iSegm); %sum(xlabels(:));
     ftrList(iSegm).areaSumRelIm =  ftrList(iSegm).areaSumAbs * 100.0 / imageArea;
-    ftrList(iSegm).eulerNum8 = bweuler( uint16(xlabels) ,8);
+    ftrList(iSegm).eulerNum8 = bweuler( uint16(labels) ,8);
 
     %% chce ještì!!
 %     h-momenty šikmost ostrost a rozptyl barev

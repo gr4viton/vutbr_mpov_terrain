@@ -1,5 +1,5 @@
 function [ segIm, indxIm ] = ...
-    map2segments( imPath, speedUp, ...
+    map2segments( imPath, speedUp, lightTreshold, colTreshold, ...
     writeSegmentedPath, writeIndexedPath, writeStatsPath, doFigures )
 %MAP2SEGMENTS segmentation of map-alike image based on mean-shift method
 % 
@@ -33,8 +33,9 @@ function [ segIm, indxIm ] = ...
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp('map2segments started');
 
-%% global plotting parameters
+%% constants & global plotting parameters
 global FI; global SX; global SY; global SI;
+% speedUp = 2; % [default]
 
 %% read image 
 
@@ -65,7 +66,8 @@ disp('> Mean-shift computation');
 
 %% shrink feature-close segments togeather
 disp('> Shrink feature-close segments togeather');
-SHRINK_segmentCount(labels,segImLUV,doFigures);
+[segImLUV,segIm,labels] = ...
+    SHRINK_segmentCount(labels,segImLUV,doFigures,lightTreshold, colTreshold);
 
 %% calculate feature lists for individual segments
 disp('> Statistics');

@@ -24,7 +24,7 @@ function main_terrainRecognition()
 %% Vypracování
 
 %% clean-up & dependencies
-% close all; clc; clear; 
+close all; clc; clear; 
 addpath(genpath('.\_functions'));
 
 %% set figure index
@@ -57,12 +57,17 @@ speedUp = 2;
 disp(num2str(speedUp));
 % for sc=logspace( -1, 0, 7);
 % for sc=linspace( 0.2, 0.3, 4);
-for sc = 0.2
+% for sc = 0.2
+sc = 0.2
+lightTreshold = 5;
+for colTreshold=linspace(0.1,20,5)
     FI = FI+1;
     im_scaled = imresize( imMax, sc );
-    im_path = [pathstr,'\',name,'_',num2str(sc*100),'_',num2str(speedUp),ext]
+    im_path = [pathstr,'\',name,'_',num2str(sc*100),'_',...
+        num2str(lightTreshold),num2str(colTreshold),ext]
     imwrite(im_scaled,im_path);
-    map2segments(im_path, speedUp, 1,1,1,1 );
+    map2segments(im_path, speedUp, lightTreshold, colTreshold, ...
+        1,1,1,1 );
 end
 
 disp('main_terrainRecognition ended');

@@ -1,4 +1,5 @@
-function [fusedSegImLUV,fusedSegImRGB,fusedSegImIndx] = SHRINK_numOfSegments(labels, segImLUV, doFigures)
+function [fusedSegImLUV,fusedSegImRGB,fusedSegImIndx] = ...
+    SHRINK_numOfSegments(labels, segImLUV, doFigures, lightTreshold, colTreshold)
 %SHRINK_numOfSegments Shrink feature-close segments togeather
 %@brief     this function shirnks the number of segments
 %           as the parameters of different segmented areas are alike
@@ -12,17 +13,29 @@ function [fusedSegImLUV,fusedSegImRGB,fusedSegImIndx] = SHRINK_numOfSegments(lab
 %% initializations
 tic;
 iSegm_max =  max(labels(:));
+nSegm_before = iSegm_max+1;
+disp(['  * nSegments before shrink = ',num2str(nSegm_before ),'']);
 % initialize triangle matrix of color-differences (= distances)
 mDist = zeros(iSegm_max);
 % initialize color vector for all segments
 col = zeros(iSegm_max,3);
 % which vector indicies represent the color value in Luv space
-colVect = 1:2;
+lightVect = 1;
+colVect = 2:3;
 
+% treshold distance - could get it from mean/median/modus of distances
+% but implicite value is good enaugh
+% lightTreshold = 2;
+% colTreshold = 4;
+    
+    
 %% anonymous function for distance squared - for not counting square root
-dist2 = @(a,b) (a(1)-b(1))^2 + (a(2)-b(2))^2;
+distLight = @(a,b) abs(a-b);
+distCol2 = @(a,b) (a(1)-b(1))^2 + (a(2)-b(2))^2;
+col2Treshold = colTreshold^2;
 
-% get color of all segments in LUV space 
+disp('  * Get LUV colors of individual segments');
+% get color of all segments in LUV space and write close segments to diagonal
 for iSegm=1:iSegm_max
     % get individual segments of index iSegm
     xlabels = labels; 
@@ -36,34 +49,33 @@ for iSegm=1:iSegm_max
 %     allNonZeroIndex = find(xlabels);
 %     allZeroIndex = find(xlabels==0);
 
-    % treshold distance - could get it from mean/median/modus of distances
-    % but implicite value is good enaugh
-    distTreshold = 5;
-    dist2Treshold = distTreshold^2;
     
-    %% for each get the 
-    % get triangle matrix of distances between individual segment colors
+    %% get matrix of distances between individual segment colors
+    % in upper triangle there are distances of color
+    % in bottom triangle there are distances of lightness
     for jSegm=iSegm:-1:1
         % skip main diagonal
         if(iSegm == jSegm), continue; end;
         % get the distance if this segment was not reindexed jet
         if( mDist(jSegm,jSegm)==0 )
-            mDist(iSegm, jSegm) = dist2(col(iSegm,colVect),col(jSegm,colVect));
-            % iSegm & jSegm are close together enaugh
-            if( mDist(iSegm, jSegm) < dist2Treshold )
+            mDist(iSegm, jSegm) = distCol2(col(iSegm,colVect),col(jSegm,colVect));
+            mDist(jSegm, iSegm) = distLight(col(iSegm,lightVect),col(jSegm,lightVect));
+            % iSegm & jSegm are close together enaugh with color & light parameters
+            if( mDist(iSegm, jSegm) < col2Treshold && ...
+                mDist(jSegm, iSegm) < lightTreshold )
                 % mark that iSegm & jSegm will be together
                 if( mDist(iSegm,iSegm)==0 ) 
                     % iSegment did not matched any other yet
                     mDist(iSegm,iSegm) = iSegm;
                     mDist(jSegm,jSegm) = iSegm;
-                    % not needed 
-                    mDist(jSegm,iSegm) = iSegm;
+                    
+%                     mDist(jSegm,iSegm) = iSegm; % not needed 
                 else
                     % iSegment already has a companion 
                     % -> jSegment will be the same as iSegment companion(s)
                     mDist(jSegm,jSegm) = mDist(iSegm,iSegm);
-                    % not needed
-                    mDist(jSegm,iSegm) = mDist(iSegm,iSegm);
+                    
+%                     mDist(jSegm,iSegm) = mDist(iSegm,iSegm); % not needed 
                 end
             end
         end
@@ -78,12 +90,25 @@ dia = diag(mDist);
 % if alreadyClustered(i) == 1 -> this iSegm cluster segments were already reindexed
 alreadyClustered = zeros(iSegm_max,1);
 
-% get mean color for each segment cluster
+
+disp('  * Get mean colros for individual segment clusters');
+% get mean color for each segment cluster & fill segmIm
+freeIndx = 0;
+xlabels = zeros(size(segImLUV,1),size(segImLUV,2));
+% xlabels = labels;
 for iSegm=1:iSegm_max
     clusterIndexes = find(dia==iSegm); % get indexes of this iSegm cluster
     nCluster = numel(clusterIndexes); % number of segments in this cluster
     if(nCluster == 0) 
         % this iSegm segment has no companion = not a part of any cluster
+        % write the new index value to the old coordinates of a segment
+        [y, x] = ind2sub(size(xlabels), find(labels==iSegm));
+        nPx = numel(y);
+        for iPx=1:nPx
+            xlabels(y(iPx), x(iPx),1) = freeIndx;
+        end
+        freeIndx=freeIndx+1;
+        % do not change the segmented image
         continue;
     end
     if(alreadyClustered(iSegm) == 1)
@@ -103,7 +128,7 @@ for iSegm=1:iSegm_max
     
     %% give all segments from this cluster - mean color in LUV image
     % mask together individual segments of this iSegm cluster
-    clusterLabelIndx = 0;
+    clusterLabelIndx = [];
     for i=1:nCluster
         clusterLabelIndx = [clusterLabelIndx; find(labels==clusterIndexes(i))];
     end
@@ -114,23 +139,30 @@ for iSegm=1:iSegm_max
     [y, x] = ind2sub(size(labels), clusterLabelIndx);
     nPx = numel(y);
     for iPx=1:nPx
-        segImLUV(y(iPx)+1, x(iPx)+1, :) = single(clusterColor(1,:));
+        segImLUV(y(iPx), x(iPx), :) = single(clusterColor(1,:));
+        xlabels(y(iPx), x(iPx),1) = freeIndx;
     end
+    freeIndx=freeIndx+1;
 end % for every iSegm cluster 
 
-% time measuring
-disp(['    - Done in ',num2str(toc),'s']);
+
+%% output
 fusedSegImLUV = segImLUV;
 fusedSegImRGB = Luv2RGB(fusedSegImLUV);
-fusedSegImIndx = 0;
+fusedSegImIndx = xlabels;
+% time measuring
+disp(['    - Done in ',num2str(toc),'s']);
+
 
 %% draw segmented & indexed image
-nSegm = max(labels(:))+1;
+nSegm = max(fusedSegImIndx(:))+1;
+disp(['  * nSegments after shrink = ',num2str(nSegm),'']);
+disp(['  * Total fused segments = ',num2str(nSegm_before - nSegm),'']);
 if(doFigures == 1)
     disp('  * Show shrinked segmented image');
     DRAW_image(fusedSegImRGB, ['segmented image (meanshift); nSegm=',num2str(nSegm),'']);
-%     disp('  * Show shrinked indexed image');
-%     DRAW_image(indxIm, ['indexed image of segments; nSegm=',num2str(nSegm),'']);
+    disp('  * Show shrinked indexed image');
+    DRAW_image(fusedSegImIndx, ['indexed image of segments; nSegm=',num2str(nSegm),'']);
 end
 
 end %fcn
