@@ -96,6 +96,9 @@ disp('  * Get mean colros for individual segment clusters');
 freeIndx = 0;
 xlabels = zeros(size(segImLUV,1),size(segImLUV,2));
 % xlabels = labels;
+
+% %  TADY NÌKDE CHYBA S FREEEEE INDEX??? pøi 8ce se nepøiøadí do xlabels
+% nic pppdbnì .. ale proè???
 for iSegm=1:iSegm_max
     clusterIndexes = find(dia==iSegm); % get indexes of this iSegm cluster
     nCluster = numel(clusterIndexes); % number of segments in this cluster
