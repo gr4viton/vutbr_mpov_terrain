@@ -13,12 +13,15 @@ function [fusedSegImLUV,fusedSegImRGB,fusedSegImIndx] = ...
 %% initializations
 tic;
 iSegm_max =  max(labels(:));
-nSegm_before = iSegm_max+1;
+nSegm = iSegm_max+1;
+nSegm_before = nSegm;
+sizeLab = size(labels);
 disp(['  * nSegments before shrink = ',num2str(nSegm_before ),'']);
+
 % initialize triangle matrix of color-differences (= distances)
-mDist = zeros(iSegm_max);
+mDist = zeros(nSegm);
 % initialize color vector for all segments
-col = zeros(iSegm_max,3);
+col = zeros(nSegm,3);
 % which vector indicies represent the color value in Luv space
 lightVect = 1;
 colVect = 2:3;
@@ -35,20 +38,16 @@ distCol2 = @(a,b) (a(1)-b(1))^2 + (a(2)-b(2))^2;
 col2Treshold = colTreshold^2;
 
 disp('  * Get LUV colors of individual segments');
-% get color of all segments in LUV space and write close segments to diagonal
-for iSegm=1:iSegm_max
-    % get individual segments of index iSegm
-    xlabels = labels; 
-    xlabels(xlabels~=iSegm) = 0;
-    xlabels = xlabels ./ iSegm; % [one] - segment | [zero] - not segment
-    
-    % get color of this segment in LUV space 
-    firstNonZeroIndex = find(xlabels,1);
-    [y, x] = ind2sub(size(xlabels),firstNonZeroIndex);
-    col(iSegm,:) = segImLUV( y, x, :);
-%     allNonZeroIndex = find(xlabels);
-%     allZeroIndex = find(xlabels==0);
+% for indexing from 1 to nSegm
+iLabels(:,:) = labels(:,:)+1;
+% DRAW_image(uint8(iLabels),'iLabels');
 
+% get color of all segments in LUV space and write close segments to diagonal
+for iSegm=1:nSegm
+    % get color of this segment in LUV space 
+    firstNonZeroIndex = find(iLabels==iSegm,1);
+    [y, x] = ind2sub(size(labels),firstNonZeroIndex);
+    col(iSegm,:) = segImLUV( y, x, :);
     
     %% get matrix of distances between individual segment colors
     % in upper triangle there are distances of color
@@ -65,17 +64,15 @@ for iSegm=1:iSegm_max
                 mDist(jSegm, iSegm) < lightTreshold )
                 % mark that iSegm & jSegm will be together
                 if( mDist(iSegm,iSegm)==0 ) 
-                    % iSegment did not matched any other yet
+                    % iSegment did not matched any other yet - this is the
+                    % first cluster
                     mDist(iSegm,iSegm) = iSegm;
                     mDist(jSegm,jSegm) = iSegm;
-                    
-%                     mDist(jSegm,iSegm) = iSegm; % not needed 
                 else
                     % iSegment already has a companion 
-                    % -> jSegment will be the same as iSegment companion(s)
-                    mDist(jSegm,jSegm) = mDist(iSegm,iSegm);
-                    
-%                     mDist(jSegm,iSegm) = mDist(iSegm,iSegm); % not needed 
+                    % -> jSegment will have the same index as iSegment & its companion(s)
+%                     mDist(jSegm,jSegm) = mDist(iSegm,iSegm);
+                    mDist(iSegm,iSegm) = mDist(jSegm,jSegm);
                 end
             end
         end
@@ -87,40 +84,52 @@ dia = diag(mDist);
 % so every segment (i) will be re-labeled to index dia(i)
 % with a mean color of all of them
 
-% if alreadyClustered(i) == 1 -> this iSegm cluster segments were already reindexed
-alreadyClustered = zeros(iSegm_max,1);
+% if alreadyReindexed(i) == 
+% 0 -> this iSegm was not reindexed yet
+% 1 -> this iSegm cluster segments were already reindexed 
+% 2 -> this iSegm is not part of a cluster and was reindexed
+alreadyReindexed = zeros(nSegm,1);
 
 
 disp('  * Get mean colros for individual segment clusters');
 % get mean color for each segment cluster & fill segmIm
-freeIndx = 0;
-xlabels = zeros(size(segImLUV,1),size(segImLUV,2));
-% xlabels = labels;
-
-% %  TADY NÌKDE CHYBA S FREEEEE INDEX??? pøi 8ce se nepøiøadí do xlabels
-% nic pppdbnì .. ale proè???
-for iSegm=1:iSegm_max
-    clusterIndexes = find(dia==iSegm); % get indexes of this iSegm cluster
-    nCluster = numel(clusterIndexes); % number of segments in this cluster
-    if(nCluster == 0) 
-        % this iSegm segment has no companion = not a part of any cluster
-        % write the new index value to the old coordinates of a segment
-        [y, x] = ind2sub(size(xlabels), find(labels==iSegm));
-        nPx = numel(y);
-        for iPx=1:nPx
-            xlabels(y(iPx), x(iPx),1) = freeIndx;
-        end
-        freeIndx=freeIndx+1;
-        % do not change the segmented image
-        continue;
-    end
-    if(alreadyClustered(iSegm) == 1)
+freeIndx = 1;
+xLabels = zeros(sizeLab);
+for iSegm=1:nSegm
+    if(alreadyReindexed(iSegm) ~= 0)
         % these iSegm cluster segments were already reindexed
         continue;
     end
-    % mark that we will reinde this iSegm cluster segments -> for not doing it multiple times
-    alreadyClustered(iSegm) = 1;
-    
+    clusterIndexes = find(dia==iSegm); % get indexes of this iSegm cluster
+    nCluster = numel(clusterIndexes); % number of segments in this cluster
+%% this iSegm segment has no companion = not a part of any cluster        
+    if(nCluster == 0) 
+        disp(['    - Segment[',num2str(iSegm),'/',num2str(nSegm),...
+            '] is not clustered; newIndx=',num2str(freeIndx),''])
+        
+        % write the new index value to the old coordinates of a segment
+        [y, x] = ind2sub(sizeLab, find(iLabels==iSegm));
+        nPx = numel(y);
+        for iPx=1:nPx
+            xLabels(y(iPx), x(iPx),1) = freeIndx;
+        end
+figure(1)
+    tit=['freeIndx=',num2str(freeIndx),'']
+    imshow(uint16(xLabels),[]); title(tit);
+        freeIndx=freeIndx+1;
+        alreadyReindexed(iSegm) = 2;
+        % do not change the segmented image
+        if(nPx > 1)
+            % this can not happen -> iSegm has no values in ilabels
+            disp(['Indexing error - segment',num2str(iSegm),' has no pixels']);
+        end
+        continue;
+    end
+%% this segment has its companions = is part of a cluster
+    % mark that we will reindex this iSegm cluster segments -> for not doing it multiple times
+    alreadyReindexed(iSegm) = 1;
+    disp(['    - Segment[',num2str(iSegm),'/',num2str(nSegm),...
+        '] is in cluster; newIndx=',num2str(freeIndx),''])
     % add individual colors
     clusterColor = zeros(1,3);
     for i=1:nCluster
@@ -131,28 +140,39 @@ for iSegm=1:iSegm_max
     
     %% give all segments from this cluster - mean color in LUV image
     % mask together individual segments of this iSegm cluster
-    clusterLabelIndx = [];
+    clusterImageIndxes = [];
     for i=1:nCluster
-        clusterLabelIndx = [clusterLabelIndx; find(labels==clusterIndexes(i))];
+        clusterImageIndxes = [clusterImageIndxes; find(iLabels==clusterIndexes(i))];
     end
     % now there are all indexes (of position space in image) of all
     % segments of this cluster in the variable [clusterLabelIndx]
     
     % so fill segImLUV image in the area of this cluster with its mean color
-    [y, x] = ind2sub(size(labels), clusterLabelIndx);
+    [y, x] = ind2sub(sizeLab, clusterImageIndxes);
     nPx = numel(y);
+    b = zeros(size(segImLUV,1),size(segImLUV,2));
+    a = cat(3,b,b,b);
     for iPx=1:nPx
         segImLUV(y(iPx), x(iPx), :) = single(clusterColor(1,:));
-        xlabels(y(iPx), x(iPx),1) = freeIndx;
+        a(y(iPx), x(iPx), :) = single(clusterColor(1,:));
+        xLabels(y(iPx), x(iPx)) = freeIndx;
+% show "pixel painting" of flooded clusters
+figure(1);imshow(uint16(xLabels),[]); 
     end
+%     imshow(Luv2RGB(a),[]); title(tit);
+figure(1);
+    tit=['freeIndx=',num2str(freeIndx),'']
+    imshow(uint16(xLabels),[]); title(tit);
     freeIndx=freeIndx+1;
 end % for every iSegm cluster 
 
+alreadyReindexed'
 
 %% output
 fusedSegImLUV = segImLUV;
 fusedSegImRGB = Luv2RGB(fusedSegImLUV);
-fusedSegImIndx = xlabels;
+% indexed from 0 to nSegm-1
+fusedSegImIndx = xLabels - 1;
 % time measuring
 disp(['    - Done in ',num2str(toc),'s']);
 
@@ -163,36 +183,11 @@ disp(['  * nSegments after shrink = ',num2str(nSegm),'']);
 disp(['  * Total fused segments = ',num2str(nSegm_before - nSegm),'']);
 if(doFigures == 1)
     disp('  * Show shrinked segmented image');
-    DRAW_image(fusedSegImRGB, ['segmented image (meanshift); nSegm=',num2str(nSegm),'']);
+    DRAW_image(fusedSegImRGB, ['shrinked segmented image; nSegm=',num2str(nSegm),'']);
     disp('  * Show shrinked indexed image');
-    DRAW_image(fusedSegImIndx, ['indexed image of segments; nSegm=',num2str(nSegm),'']);
+    DRAW_image(fusedSegImIndx, ['shrinked indexes image; nSegm=',num2str(nSegm),'']);
 end
 
 end %fcn
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

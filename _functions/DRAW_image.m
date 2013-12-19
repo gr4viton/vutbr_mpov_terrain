@@ -17,7 +17,7 @@ end
 %% subtightplot2
 % make_it_tight = true;
 addpath(genpath('.\subtightplot'));
-subplot2 = @(m,n,p) subtightplot (m, n, p, [0.05 0.01], [0.05 0.01], [0.01 0.01]);
+subplot2 = @(m,n,p) subtightplot (m, n, p, [0.05 0.01], [0.02 0.05], [0.01 0.01]);
 % if ~make_it_tight,  clear subplot;  end
 
 %% draw

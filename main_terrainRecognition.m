@@ -28,7 +28,7 @@ close all; clc; clear;
 addpath(genpath('.\_functions'));
 
 %% set figure index
-global FI; FI = 0;
+global FI; FI = 1;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp('main_terrainRecognition started');
@@ -43,7 +43,8 @@ disp('main_terrainRecognition started');
 % ob{i} = imread(strcat('pic\smaller.png')); fn{i}=strcat('pic\smaller.png');
 
 % imMax = imread('pic\map5.png');
-imPath = 'd:\EDUC\m1\V_MPOV\proj_terrain_recognition\TRY\pic\map5.png';
+% imPath = 'd:\EDUC\m1\V_MPOV\proj_terrain_recognition\TRY\pic\map5.png';
+imPath = 'd:\EDUC\m1\V_MPOV\proj_terrain_recognition\TRY\pic\map2.png';
 imMax = imread(imPath);
 
 
@@ -58,10 +59,11 @@ disp(num2str(speedUp));
 % for sc=logspace( -1, 0, 7);
 % for sc=linspace( 0.2, 0.3, 4);
 % for sc = 0.2
-sc = 0.2
+% sc = 0.2;
+sc = 0.1;
 lightTreshold = 5;
-for colTreshold=linspace(0.1,20,5)
-    FI = FI+1;
+for colTreshold=linspace(3,20,5)
+%     FI = FI+1;
     im_scaled = imresize( imMax, sc );
     im_path = [pathstr,'\',name,'_',num2str(sc*100),'_',...
         num2str(lightTreshold),num2str(colTreshold),ext]

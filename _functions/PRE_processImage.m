@@ -21,12 +21,13 @@ end
 
 %% apply Gaussian filter
 G = fspecial('gaussian', round(rng), sgm);
-prepIm = imfilter(im, G, 'same');
+prepIm = imfilter(im, G, 'replicate', 'same');
 
 
 %% draw preprocessed image
 if(doFigures==1)
-    tit = ['Preprocessed image [r=',num2str(rng),';s=',num2str(sgm),']'];
+    tit = ['Preprocessed[',num2str(size(im,1)),'×',num2str(size(im,2)),...
+        ']px;[r=',num2str(round(rng)),';s=',num2str(sgm),']'];
     DRAW_image(prepIm,  tit);
 end
 

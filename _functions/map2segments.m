@@ -51,7 +51,7 @@ if(doFigures == 1)
     figure(FI); SX = 2; SY = 3; SI = 0;
     % draw input image
     disp('  * Show input image');
-    tit=['original res=',num2str(size(im,1)),'×',num2str(size(im,2))];
+    tit=['Original[',num2str(size(im,1)),'×',num2str(size(im,2)),']px'];
     DRAW_image(im, tit);
 end
 

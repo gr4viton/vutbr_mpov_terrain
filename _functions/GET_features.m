@@ -55,11 +55,10 @@ for iSegm = 1:iSegm_max
 %     xlabels = xlabels ./ iSegm; % [one] - segment | [zero] - not segment
 %     
     allNonZeroIndex = find(labels==iSegm);
-%     allZeroIndex = find(xlabels==0);
-%     if( numel(allNonZeroIndex) == 0)
-%         disp(['Indexation error - segment[',num2str(iSegm),'] index number has no pixels attached!']);
-%         break;
-%     end
+    if( numel(allNonZeroIndex) == 0)
+        disp(['Indexation error - segment[',num2str(iSegm),'] index number has no pixels attached!']);
+        break;
+    end
 % meanshift end color - the color to which segment iterated to
     firstNonZeroIndex = allNonZeroIndex(1); % find(xlabels, 1, 'first');
     [y, x] = ind2sub(size(labels),firstNonZeroIndex);
