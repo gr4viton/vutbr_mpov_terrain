@@ -31,7 +31,7 @@ end
 %% chose image index
 % nice = 5
 % nice & quick = 2
-iChosen = 2;
+iChosen = 4;
 
 %% load chosen image
 imPath = imPath_all{iChosen};
